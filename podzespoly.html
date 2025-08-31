@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamOrganizer - Zarządzanie Zespołami</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👥</text></svg>"
+        type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285F4;
+            --primary-light: #8ab4f8;
+            --secondary-color: #34A853;
+            --secondary-light: #81c995;
+            --accent-color: #EA4335;
+            --accent-light: #f28b82;
+            --background-dark: #1a1a1a;
+            --surface-dark: #2d2d2d;
+            --card-dark: #3c3c3c;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --border-dark: #444;
+            --border-light: #666;
+            --success-color: #34A853;
+            --warning-color: #FBBC05;
+            --info-color: #4285F4;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-dark) 0%, #2a2a2a 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: var(--surface-dark);
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .login-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(66, 133, 244, 0.4);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .tabs {
+            display: flex;
+            margin: 25px 0;
+            background-color: var(--surface-dark);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .tab {
+            padding: 18px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background-color: rgba(66, 133, 244, 0.15);
+            color: var(--primary-light);
+        }
+
+        .tab.active::after {
+            width: 80%;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: var(--card-dark);
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--surface-dark);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sub-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            flex-wrap: wrap;
+        }
+
+        .sub-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .sub-tab.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .sub-tab:hover:not(.active) {
+            background-color: #2d9340;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .team-card {
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid var(--border-dark);
+            position: relative;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+            border-color: var(--primary-light);
+        }
+
+        .team-icon {
+            height: 140px;
+            background: linear-gradient(45deg, var(--surface-dark), var(--card-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .team-info {
+            padding: 20px;
+        }
+
+        .team-name {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+        }
+
+        .team-members-count {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-dark);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background-color: var(--card-dark);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+        }
+
+        button {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 14px 26px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, var(--accent-color), var(--accent-light));
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 6px 14px rgba(234, 67, 53, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 6px 14px rgba(52, 168, 83, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-dark);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-dark);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        .member-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .member-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-dark);
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .member-item:hover {
+            background-color: rgba(66, 133, 244, 0.1);
+            transform: translateX(5px);
+        }
+
+        .note-editor {
+            border: 2px solid var(--border-dark);
+            border-radius: var(--border-radius);
+            min-height: 250px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-dark);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .note-editor:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .note-item {
+            padding: 20px;
+            border: 1px solid var(--border-dark);
+            margin-bottom: 20px;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .note-item:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .note-author {
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        .note-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .competence-list,
+        .council-list {
+            margin-top: 25px;
+        }
+
+        .competence-item,
+        .council-item {
+            padding: 20px;
+            border: 1px solid var(--border-dark);
+            margin-bottom: 20px;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .competence-item:hover,
+        .council-item:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .competence-details {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-dark);
+        }
+
+        .person-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .person-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .person-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-list {
+            margin-top: 20px;
+        }
+
+        .task-item {
+            padding: 20px;
+            border: 1px solid var(--border-dark);
+            margin-bottom: 20px;
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .task-item:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .task-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .task-assignee {
+            color: var(--primary-light);
+            font-weight: 500;
+        }
+
+        .task-description {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .task-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-todo {
+            background-color: rgba(234, 67, 53, 0.2);
+            color: var(--accent-light);
+        }
+
+        .status-inprogress {
+            background-color: rgba(251, 188, 5, 0.2);
+            color: var(--warning-color);
+        }
+
+        .status-done {
+            background-color: rgba(52, 168, 83, 0.2);
+            color: var(--secondary-light);
+        }
+
+        .task-deadline {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--surface-dark);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-dark);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .modal-title {
+            font-size: 1.6rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .close-modal {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-light);
+            background-color: rgba(234, 67, 53, 0.1);
+        }
+
+        .team-tab-content {
+            display: none;
+            padding: 20px 0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .team-tab-content.active {
+            display: block;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .icon-preview {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed var(--border-dark);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .icon-preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        .card {
+            background-color: var(--card-dark);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-dark);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .help-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs,
+            .sub-tabs {
+                flex-direction: column;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .task-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* Animation for notifications */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.success {
+            background-color: var(--secondary-color);
+        }
+
+        .notification.error {
+            background-color: var(--accent-color);
+        }
+
+        .notification.info {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-users logo-icon"></i>
+            <span>TeamOrganizer</span>
+        </div>
+        <div id="auth-container">
+            <button id="login-btn" class="login-btn">
+                <i class="fab fa-google"></i>
+                <span>Zaloguj przez Google</span>
+            </button>
+            <div id="user-info" class="user-info hidden">
+                <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+                <span id="user-name" class="user-name"></span>
+                <button id="logout-btn" class="btn-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Wyloguj</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="teams">
+                <i class="fas fa-layer-group"></i>
+                <span>Podzespoły</span>
+            </div>
+            <div class="tab" data-tab="organization">
+                <i class="fas fa-users"></i>
+                <span>Zespół</span>
+            </div>
+        </div>
+
+        <!-- Zakładka Podzespoły -->
+        <div id="teams-tab" class="tab-content active">
+            <h2 class="section-title">
+                <i class="fas fa-layer-group"></i>
+                Podzespoły
+            </h2>
+            <p>Zarządzaj podzespołami lub utwórz nowy.</p>
+            <button id="create-team-btn" class="btn-success">
+                <i class="fas fa-plus"></i>
+                Utwórz nowy podzespół
+            </button>
+
+            <div class="team-grid" id="teams-container">
+                <!-- Karty podzespołów będą dodawane dynamicznie -->
+            </div>
+        </div>
+
+        <!-- Zakładka Zespół -->
+        <div id="organization-tab" class="tab-content">
+            <div class="sub-tabs">
+                <div class="sub-tab active" data-subtab="councils">
+                    <i class="fas fa-landmark"></i>
+                    Rady i Organizacje
+                </div>
+                <div class="sub-tab" data-subtab="competences">
+                    <i class="fas fa-tools"></i>
+                    Kompetencje
+                </div>
+            </div>
+
+            <!-- Podzakładka Rady i Organizacje -->
+            <div id="councils-subtab" class="team-tab-content active">
+                <h3 class="section-title">
+                    <i class="fas fa-landmark"></i>
+                    Rady i Organizacje
+                </h3>
+                <p>Dodaj i zarządzaj radami oraz organizacjami zespołu.</p>
+                <button id="add-council-btn" class="btn-success">
+                    <i class="fas fa-plus"></i>
+                    Dodaj organizację/radę
+                </button>
+
+                <div id="councils-list" class="council-list">
+                    <!-- Lista rad i organizacji będzie dodawana dynamicznie -->
+                </div>
+            </div>
+
+            <!-- Podzakładka Kompetencje -->
+            <div id="competences-subtab" class="team-tab-content">
+                <h3 class="section-title">
+                    <i class="fas fa-tools"></i>
+                    Kompetencje
+                </h3>
+                <p>Zarządzaj kompetencjami członków zespołu.</p>
+                <button id="add-competence-btn" class="btn-success">
+                    <i class="fas fa-plus"></i>
+                    Dodaj kompetencję
+                </button>
+
+                <div class="form-group">
+                    <input type="text" id="competence-filter" placeholder="Filtruj kompetencje...">
+                </div>
+
+                <div id="competences-list" class="competence-list">
+                    <!-- Lista kompetencji będzie dodawana dynamicznie -->
+                </div>
+
+                <div id="competence-details" class="competence-details hidden">
+                    <h4>Szczegóły kompetencji: <span id="competence-name"></span></h4>
+                    <h5>Osoby z tą kompetencją:</h5>
+                    <ul id="competence-people-list" class="person-list">
+                        <!-- Lista osób z kompetencją będzie dodawana dynamicznie -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal do tworzenia podzespołu -->
+        <div id="create-team-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Utwórz nowy podzespół</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="create-team-form">
+                    <div class="form-group">
+                        <label for="team-name">Nazwa podzespołu</label>
+                        <input type="text" id="team-name" required placeholder="Wprowadź nazwę podzespołu">
+                    </div>
+                    <div class="form-group">
+                        <label for="team-icon">Ikona podzespołu</label>
+                        <input type="file" id="team-icon" accept="image/*">
+                        <div class="icon-preview" id="icon-preview">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="help-text">Dodaj ikonę dla swojego podzespołu (opcjonalnie)</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Utwórz
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal szczegółów podzespołu -->
+        <div id="team-details-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="team-modal-title">Szczegóły podzespołu</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+
+                <div class="sub-tabs">
+                    <div class="sub-tab active" data-team-tab="members">
+                        <i class="fas fa-users"></i>
+                        Członkowie
+                    </div>
+                    <div class="sub-tab" data-team-tab="description">
+                        <i class="fas fa-file-alt"></i>
+                        Opis
+                    </div>
+                    <div class="sub-tab" data-team-tab="news">
+                        <i class="fas fa-newspaper"></i>
+                        Aktualności
+                    </div>
+                    <div class="sub-tab" data-team-tab="tasks">
+                        <i class="fas fa-tasks"></i>
+                        Zadania
+                    </div>
+                    <div class="sub-tab" data-team-tab="notes">
+                        <i class="fas fa-sticky-note"></i>
+                        Notatki
+                    </div>
+                    <div class="sub-tab" data-team-tab="import-export">
+                        <i class="fas fa-file-export"></i>
+                        Eksport/Import
+                    </div>
+                    <div class="sub-tab" data-team-tab="delete">
+                        <i class="fas fa-trash"></i>
+                        Usuń
+                    </div>
+                </div>
+
+                <!-- Zakładka Członkowie -->
+                <div id="team-members-tab" class="team-tab-content active">
+                    <h4 class="card-title">
+                        <i class="fas fa-users"></i>
+                        Członkowie podzespołu
+                    </h4>
+                    <p>Zarządzaj członkami podzespołu.</p>
+                    <button id="add-member-btn" class="btn-success">
+                        <i class="fas fa-plus"></i>
+                        Dodaj członka
+                    </button>
+
+                    <ul class="member-list" id="team-members-list">
+                        <!-- Lista członków będzie dodawana dynamicznie -->
+                    </ul>
+                </div>
+
+                <!-- Zakładka Opis -->
+                <div id="team-description-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-file-alt"></i>
+                        Opis podzespołu
+                    </h4>
+                    <p>Dodaj opis podzespołu i jego działań.</p>
+                    <div class="note-editor" contenteditable="true" id="team-description-editor"></div>
+                    <div class="action-buttons">
+                        <button id="save-description-btn">
+                            <i class="fas fa-save"></i>
+                            Zapisz opis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Zakładka Aktualności -->
+                <div id="team-news-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-newspaper"></i>
+                        Aktualności podzespołu
+                    </h4>
+                    <p>Dodaj najnowsze informacje i zmiany w podzespole.</p>
+                    <div class="note-editor" contenteditable="true" id="team-news-editor"></div>
+                    <div class="action-buttons">
+                        <button id="save-news-btn">
+                            <i class="fas fa-save"></i>
+                            Zapisz aktualności
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Zakładka Zadania -->
+                <div id="team-tasks-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-tasks"></i>
+                        Zadania podzespołu
+                    </h4>
+                    <p>Dodaj i zarządzaj zadaniami dla członków podzespołu.</p>
+                    <button id="add-task-btn" class="btn-success">
+                        <i class="fas fa-plus"></i>
+                        Dodaj zadanie
+                    </button>
+
+                    <div id="team-tasks-list" class="task-list">
+                        <!-- Lista zadań będzie dodawana dynamicznie -->
+                    </div>
+                </div>
+
+                <!-- Zakładka Notatki -->
+                <div id="team-notes-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-sticky-note"></i>
+                        Notatki ze spotkań
+                    </h4>
+                    <p>Dodawaj i przeglądaj notatki ze spotkań podzespołu.</p>
+                    <button id="add-note-btn" class="btn-success">
+                        <i class="fas fa-plus"></i>
+                        Dodaj notatkę
+                    </button>
+
+                    <div id="team-notes-list">
+                        <!-- Lista notatek będzie dodawana dynamicznie -->
+                    </div>
+                </div>
+
+                <!-- Zakładka Eksport/Import -->
+                <div id="team-import-export-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-file-export"></i>
+                        Eksport/Import danych
+                    </h4>
+                    <p>Eksportuj lub importuj dane podzespołu.</p>
+                    <div class="action-buttons">
+                        <button id="export-team-btn">
+                            <i class="fas fa-download"></i>
+                            Eksportuj dane podzespołu
+                        </button>
+                        <button id="export-all-btn" class="btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Eksportuj wszystkie dane
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="import-team-file">Importuj dane podzespołu</label>
+                        <input type="file" id="import-team-file" accept=".json">
+                        <div class="help-text">Wybierz plik JSON wyeksportowany wcześniej z aplikacji</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="import-team-btn">
+                            <i class="fas fa-upload"></i>
+                            Importuj
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Zakładka Usuń -->
+                <div id="team-delete-tab" class="team-tab-content">
+                    <h4 class="card-title">
+                        <i class="fas fa-trash"></i>
+                        Usuwanie podzespołu
+                    </h4>
+                    <p>Usunięcie podzespołu jest nieodwracalne. Wszystkie dane związane z tym podzespołem zostaną trwale
+                        usunięte.</p>
+                    <div class="action-buttons">
+                        <button id="delete-team-btn" class="btn-danger">
+                            <i class="fas fa-trash"></i>
+                            Usuń podzespół
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal dodawania członka -->
+        <div id="add-member-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Dodaj członka</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="add-member-form">
+                    <div class="form-group">
+                        <label for="member-name">Imię i nazwisko</label>
+                        <input type="text" id="member-name" required placeholder="Wprowadź imię i nazwisko">
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Dodaj
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal dodawania notatki -->
+        <div id="add-note-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Dodaj notatkę</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="add-note-form">
+                    <div class="form-group">
+                        <label for="note-author">Autor</label>
+                        <input type="text" id="note-author" required value="Jan Kowalski">
+                    </div>
+                    <div class="form-group">
+                        <label for="note-date">Data</label>
+                        <input type="date" id="note-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-content">Treść notatki</label>
+                        <textarea id="note-content" rows="5" required placeholder="Wprowadź treść notatki"></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Dodaj
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal dodawania zadania -->
+        <div id="add-task-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Dodaj zadanie</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="add-task-form">
+                    <div class="form-group">
+                        <label for="task-title">Tytuł zadania</label>
+                        <input type="text" id="task-title" required placeholder="Wprowadź tytuł zadania">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Opis zadania</label>
+                        <textarea id="task-description" rows="3" required
+                            placeholder="Wprowadź opis zadania"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-assignee">Przypisz do</label>
+                        <select id="task-assignee" required>
+                            <option value="">Wybierz członka</option>
+                            <!-- Opcje będą dodawane dynamicznie -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-status">Status</label>
+                        <select id="task-status" required>
+                            <option value="todo">Do wykonania</option>
+                            <option value="inprogress">W trakcie</option>
+                            <option value="done">Zakończone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-deadline">Termin</label>
+                        <input type="date" id="task-deadline" required>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Dodaj
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal edycji zadania -->
+        <div id="edit-task-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edytuj zadanie</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="edit-task-form">
+                    <input type="hidden" id="edit-task-id">
+                    <div class="form-group">
+                        <label for="edit-task-title">Tytuł zadania</label>
+                        <input type="text" id="edit-task-title" required placeholder="Wprowadź tytuł zadania">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-task-description">Opis zadania</label>
+                        <textarea id="edit-task-description" rows="3" required
+                            placeholder="Wprowadź opis zadania"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-task-assignee">Przypisz do</label>
+                        <select id="edit-task-assignee" required>
+                            <option value="">Wybierz członka</option>
+                            <!-- Opcje będą dodawane dynamicznie -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-task-status">Status</label>
+                        <select id="edit-task-status" required>
+                            <option value="todo">Do wykonania</option>
+                            <option value="inprogress">W trakcie</option>
+                            <option value="done">Zakończone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-task-deadline">Termin</label>
+                        <input type="date" id="edit-task-deadline" required>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-save"></i>
+                            Zapisz zmiany
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal dodawania rady/organizacji -->
+        <div id="add-council-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Dodaj organizację/radę</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="add-council-form">
+                    <div class="form-group">
+                        <label for="council-name">Nazwa</label>
+                        <input type="text" id="council-name" required placeholder="Wprowadź nazwę">
+                    </div>
+                    <div class="form-group">
+                        <label for="council-description">Opis</label>
+                        <textarea id="council-description" rows="3" required
+                            placeholder="Wprowadź krótki opis"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="council-contact">Osoba kontaktowa</label>
+                        <select id="council-contact" required>
+                            <option value="">Wybierz osobę kontaktową</option>
+                            <!-- Opcje będą dodawane dynamicznie -->
+                        </select>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Dodaj
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal dodawania kompetencji -->
+        <div id="add-competence-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Dodaj kompetencję</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <form id="add-competence-form">
+                    <div class="form-group">
+                        <label for="competence-name">Nazwa kompetencji</label>
+                        <input type="text" id="competence-name" required placeholder="Wprowadź nazwę kompetencji">
+                    </div>
+                    <div class="form-group">
+                        <label for="competence-people">Osoby z tą kompetencją</label>
+                        <select id="competence-people" multiple>
+                            <!-- Opcje będą dodawane dynamicznie -->
+                        </select>
+                        <div class="help-text">Przytrzymaj Ctrl (Cmd na Mac) aby wybrać wiele osób</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit">
+                            <i class="fas fa-check"></i>
+                            Dodaj
+                        </button>
+                        <button type="button" class="btn-danger close-modal">
+                            <i class="fas fa-times"></i>
+                            Anuluj
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dane aplikacji
+        let currentUser = null;
+        let teams = [];
+        let councils = [];
+        let competences = [];
+        let currentTeam = null;
+        let currentCompetence = null;
+
+        // Elementy DOM
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+        const userName = document.getElementById('user-name');
+        const userAvatar = document.getElementById('user-avatar');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const subTabs = document.querySelectorAll('.sub-tab');
+        const createTeamBtn = document.getElementById('create-team-btn');
+        const createTeamModal = document.getElementById('create-team-modal');
+        const teamDetailsModal = document.getElementById('team-details-modal');
+        const addMemberModal = document.getElementById('add-member-modal');
+        const addNoteModal = document.getElementById('add-note-modal');
+        const addTaskModal = document.getElementById('add-task-modal');
+        const editTaskModal = document.getElementById('edit-task-modal');
+        const addCouncilModal = document.getElementById('add-council-modal');
+        const addCompetenceModal = document.getElementById('add-competence-modal');
+        const closeModals = document.querySelectorAll('.close-modal');
+        const createTeamForm = document.getElementById('create-team-form');
+        const addMemberForm = document.getElementById('add-member-form');
+        const addNoteForm = document.getElementById('add-note-form');
+        const addTaskForm = document.getElementById('add-task-form');
+        const editTaskForm = document.getElementById('edit-task-form');
+        const addCouncilForm = document.getElementById('add-council-form');
+        const addCompetenceForm = document.getElementById('add-competence-form');
+        const teamsContainer = document.getElementById('teams-container');
+        const addCouncilBtn = document.getElementById('add-council-btn');
+        const addCompetenceBtn = document.getElementById('add-competence-btn');
+        const councilsList = document.getElementById('councils-list');
+        const competencesList = document.getElementById('competences-list');
+        const competenceFilter = document.getElementById('competence-filter');
+        const competenceDetails = document.getElementById('competence-details');
+        const competenceName = document.getElementById('competence-name');
+        const competencePeopleList = document.getElementById('competence-people-list');
+        const teamTabs = document.querySelectorAll('[data-team-tab]');
+        const teamTabContents = document.querySelectorAll('.team-tab-content');
+        const iconPreview = document.getElementById('icon-preview');
+        const teamIconInput = document.getElementById('team-icon');
+        const exportAllBtn = document.getElementById('export-all-btn');
+
+        // Inicjalizacja aplikacji
+        function initApp() {
+            // Symulacja logowania przez Google
+            loginBtn.addEventListener('click', signInWithGoogle);
+            logoutBtn.addEventListener('click', signOut);
+
+            // Obsługa zakładek
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    activateTab(tabId);
+                });
+            });
+
+            // Obsługa podzakładek
+            subTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const subtabId = tab.getAttribute('data-subtab');
+                    activateSubTab(subtabId);
+                });
+            });
+
+            // Obsługa zakładek w modalach
+            teamTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const teamTabId = tab.getAttribute('data-team-tab');
+                    activateTeamTab(teamTabId);
+                });
+            });
+
+            // Obsługa modali
+            createTeamBtn.addEventListener('click', () => {
+                createTeamModal.style.display = 'flex';
+            });
+
+            closeModals.forEach(closeBtn => {
+                closeBtn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                });
+            });
+
+            // Podgląd ikony
+            teamIconInput.addEventListener('change', handleIconPreview);
+
+            // Obsługa formularzy
+            createTeamForm.addEventListener('submit', handleCreateTeam);
+            addMemberForm.addEventListener('submit', handleAddMember);
+            addNoteForm.addEventListener('submit', handleAddNote);
+            addTaskForm.addEventListener('submit', handleAddTask);
+            editTaskForm.addEventListener('submit', handleEditTask);
+            addCouncilForm.addEventListener('submit', handleAddCouncil);
+            addCompetenceForm.addEventListener('submit', handleAddCompetence);
+
+            // Obsługa przycisków
+            addCouncilBtn.addEventListener('click', () => {
+                // Wypełnij listę osób
+                const contactSelect = document.getElementById('council-contact');
+                contactSelect.innerHTML = '<option value="">Wybierz osobę kontaktową</option>';
+
+                const allMembers = getAllUniqueMembers();
+                allMembers.forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member;
+                    option.textContent = member;
+                    contactSelect.appendChild(option);
+                });
+
+                addCouncilModal.style.display = 'flex';
+            });
+
+            addCompetenceBtn.addEventListener('click', () => {
+                // Wypełnij listę osób
+                const peopleSelect = document.getElementById('competence-people');
+                peopleSelect.innerHTML = '';
+
+                const allMembers = getAllUniqueMembers();
+                allMembers.forEach(member => {
+                    const option = document.createElement('option');
+                    option.value = member;
+                    option.textContent = member;
+                    peopleSelect.appendChild(option);
+                });
+
+                addCompetenceModal.style.display = 'flex';
+            });
+
+            document.getElementById('add-member-btn').addEventListener('click', () => {
+                addMemberModal.style.display = 'flex';
+            });
+
+            document.getElementById('add-note-btn').addEventListener('click', () => {
+                // Ustaw domyślną datę na dzisiejszą
+                document.getElementById('note-date').valueAsDate = new Date();
+                addNoteModal.style.display = 'flex';
+            });
+
+            document.getElementById('add-task-btn').addEventListener('click', () => {
+                // Ustaw domyślną datę na dzisiejszą + 7 dni
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                document.getElementById('task-deadline').valueAsDate = nextWeek;
+
+                // Wypełnij listę członków
+                const assigneeSelect = document.getElementById('task-assignee');
+                assigneeSelect.innerHTML = '<option value="">Wybierz członka</option>';
+
+                if (currentTeam && currentTeam.members) {
+                    currentTeam.members.forEach(member => {
+                        const option = document.createElement('option');
+                        option.value = member.id;
+                        option.textContent = member.name;
+                        assigneeSelect.appendChild(option);
+                    });
+                }
+
+                addTaskModal.style.display = 'flex';
+            });
+
+            document.getElementById('delete-team-btn').addEventListener('click', handleDeleteTeam);
+            document.getElementById('save-description-btn').addEventListener('click', handleSaveDescription);
+            document.getElementById('save-news-btn').addEventListener('click', handleSaveNews);
+            document.getElementById('export-team-btn').addEventListener('click', handleExportTeam);
+            exportAllBtn.addEventListener('click', handleExportAll);
+            document.getElementById('import-team-btn').addEventListener('click', handleImportTeam);
+
+            // Obsługa filtrowania kompetencji
+            competenceFilter.addEventListener('input', filterCompetences);
+
+            // Ładowanie danych z localStorage
+            loadFromLocalStorage();
+
+            // Jeśli brak danych, załaduj przykładowe
+            if (teams.length === 0 && councils.length === 0 && competences.length === 0) {
+                loadSampleData();
+            }
+
+            // Renderowanie danych
+            renderTeams();
+            renderCouncils();
+            renderCompetences();
+
+            // Ustawienie domyślnej daty dla notatek
+            document.getElementById('note-date').valueAsDate = new Date();
+        }
+
+        // Funkcje logowania (symulacja)
+        function signInWithGoogle() {
+            currentUser = {
+                displayName: "Jan Kowalski",
+                email: "jan.kowalski@example.com",
+                photoURL: "https://via.placeholder.com/40/4285F4/FFFFFF?text=J"
+            };
+
+            updateUIAfterAuth();
+            saveToLocalStorage();
+            showNotification('Zalogowano pomyślnie!', 'success');
+        }
+
+        function signOut() {
+            currentUser = null;
+            updateUIAfterAuth();
+            saveToLocalStorage();
+            showNotification('Wylogowano pomyślnie!', 'info');
+        }
+
+        function updateUIAfterAuth() {
+            if (currentUser) {
+                loginBtn.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                userName.textContent = currentUser.displayName;
+                userAvatar.src = currentUser.photoURL;
+                document.getElementById('note-author').value = currentUser.displayName;
+            } else {
+                loginBtn.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+            }
+        }
+
+        // Funkcje zarządzania zakładkami
+        function activateTab(tabId) {
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            tabContents.forEach(content => {
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        function activateSubTab(subtabId) {
+            subTabs.forEach(tab => {
+                if (tab.getAttribute('data-subtab') === subtabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            document.querySelectorAll('.team-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(`${subtabId}-subtab`).classList.add('active');
+        }
+
+        function activateTeamTab(teamTabId) {
+            teamTabs.forEach(tab => {
+                if (tab.getAttribute('data-team-tab') === teamTabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            teamTabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(`team-${teamTabId}-tab`).classList.add('active');
+        }
+
+        // Funkcje zarządzania podzespołami
+        function handleIconPreview(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    iconPreview.innerHTML = `<img src="${e.target.result}" alt="Podgląd ikony">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleCreateTeam(e) {
+            e.preventDefault();
+            const teamName = document.getElementById('team-name').value;
+            const teamIconFile = document.getElementById('team-icon').files[0];
+
+            let teamIcon = "👥"; // Domyślna ikona
+
+            if (teamIconFile) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    teamIcon = e.target.result;
+                    finishTeamCreation(teamName, teamIcon);
+                };
+                reader.readAsDataURL(teamIconFile);
+            } else {
+                finishTeamCreation(teamName, teamIcon);
+            }
+        }
+
+        function finishTeamCreation(teamName, teamIcon) {
+            const newTeam = {
+                id: Date.now(),
+                name: teamName,
+                icon: teamIcon,
+                members: [],
+                description: "",
+                news: "",
+                tasks: [],
+                notes: []
+            };
+
+            teams.push(newTeam);
+            renderTeams();
+            createTeamModal.style.display = 'none';
+            createTeamForm.reset();
+            iconPreview.innerHTML = '<i class="fas fa-image"></i>';
+            saveToLocalStorage();
+
+            showNotification(`Podzespół "${teamName}" został utworzony!`, 'success');
+        }
+
+        function openTeamDetails(teamId) {
+            currentTeam = teams.find(team => team.id === teamId);
+            if (currentTeam) {
+                document.getElementById('team-modal-title').textContent = currentTeam.name;
+                renderTeamDetails();
+                teamDetailsModal.style.display = 'flex';
+
+                // Aktywuj pierwszą zakładkę
+                activateTeamTab('members');
+            }
+        }
+
+        function renderTeams() {
+            teamsContainer.innerHTML = '';
+
+            if (teams.length === 0) {
+                teamsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Brak utworzonych podzespołów. Kliknij "Utwórz nowy podzespół", aby dodać pierwszy.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            teams.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+
+                let iconContent = '';
+                if (team.icon.startsWith('data:image')) {
+                    iconContent = `<img src="${team.icon}" alt="${team.name}">`;
+                } else {
+                    iconContent = `<span>${team.icon}</span>`;
+                }
+
+                teamCard.innerHTML = `
+                    <div class="team-icon">${iconContent}</div>
+                    <div class="team-info">
+                        <div class="team-name">${team.name}</div>
+                        <div class="team-members-count">
+                            <i class="fas fa-users"></i>
+                            ${team.members.length} członków
+                        </div>
+                    </div>
+                `;
+
+                teamCard.addEventListener('click', () => openTeamDetails(team.id));
+                teamsContainer.appendChild(teamCard);
+            });
+        }
+
+        function renderTeamDetails() {
+            if (!currentTeam) return;
+
+            // Renderowanie członków
+            const membersList = document.getElementById('team-members-list');
+            membersList.innerHTML = '';
+
+            if (currentTeam.members.length === 0) {
+                membersList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>Brak członków w tym podzespole.</p>
+                    </div>
+                `;
+            } else {
+                currentTeam.members.sort((a, b) => a.name.localeCompare(b.name)).forEach(member => {
+                    const memberItem = document.createElement('li');
+                    memberItem.className = 'member-item';
+                    memberItem.innerHTML = `
+                        <span>${member.name}</span>
+                        <button class="btn-danger remove-member" data-id="${member.id}">
+                            <i class="fas fa-trash"></i>
+                            Usuń
+                        </button>
+                    `;
+                    membersList.appendChild(memberItem);
+                });
+
+                // Dodanie nasłuchiwania na przyciski usuwania
+                document.querySelectorAll('.remove-member').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const memberId = parseInt(e.target.closest('.remove-member').getAttribute('data-id'));
+                        removeMember(memberId);
+                    });
+                });
+            }
+
+            // Renderowanie opisu
+            const descriptionEditor = document.getElementById('team-description-editor');
+            descriptionEditor.innerHTML = currentTeam.description || '<p>Dodaj opis podzespołu...</p>';
+
+            // Renderowanie aktualności
+            const newsEditor = document.getElementById('team-news-editor');
+            newsEditor.innerHTML = currentTeam.news || '<p>Dodaj aktualności podzespołu...</p>';
+
+            // Renderowanie zadań
+            const tasksList = document.getElementById('team-tasks-list');
+            tasksList.innerHTML = '';
+
+            if (currentTeam.tasks.length === 0) {
+                tasksList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>Brak zadań w tym podzespole.</p>
+                    </div>
+                `;
+            } else {
+                currentTeam.tasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline)).forEach(task => {
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'task-item';
+                    taskItem.setAttribute('data-id', task.id);
+
+                    let statusClass = '';
+                    let statusText = '';
+                    let statusIcon = '';
+
+                    switch (task.status) {
+                        case 'todo':
+                            statusClass = 'status-todo';
+                            statusText = 'Do wykonania';
+                            statusIcon = 'fas fa-circle';
+                            break;
+                        case 'inprogress':
+                            statusClass = 'status-inprogress';
+                            statusText = 'W trakcie';
+                            statusIcon = 'fas fa-spinner';
+                            break;
+                        case 'done':
+                            statusClass = 'status-done';
+                            statusText = 'Zakończone';
+                            statusIcon = 'fas fa-check-circle';
+                            break;
+                    }
+
+                    const assignee = currentTeam.members.find(m => m.id === task.assignee) || { name: 'Nieznany' };
+
+                    taskItem.innerHTML = `
+                        <div class="task-header">
+                            <div class="task-title">${task.title}</div>
+                            <div class="task-assignee">Przypisane do: ${assignee.name}</div>
+                        </div>
+                        <div class="task-description">${task.description}</div>
+                        <div class="task-meta">
+                            <span class="task-status ${statusClass}">
+                                <i class="${statusIcon}"></i>
+                                ${statusText}
+                            </span>
+                            <span class="task-deadline">
+                                <i class="fas fa-calendar-alt"></i>
+                                Termin: ${formatDate(task.deadline)}
+                            </span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="edit-task" data-id="${task.id}">
+                                <i class="fas fa-edit"></i>
+                                Edytuj
+                            </button>
+                            <button class="btn-danger remove-task" data-id="${task.id}">
+                                <i class="fas fa-trash"></i>
+                                Usuń
+                            </button>
+                        </div>
+                    `;
+                    tasksList.appendChild(taskItem);
+                });
+
+                // Dodanie nasłuchiwania na przyciski zadań
+                document.querySelectorAll('.edit-task').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const taskId = parseInt(e.target.closest('.edit-task').getAttribute('data-id'));
+                        editTask(taskId);
+                    });
+                });
+
+                document.querySelectorAll('.remove-task').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const taskId = parseInt(e.target.closest('.remove-task').getAttribute('data-id'));
+                        removeTask(taskId);
+                    });
+                });
+            }
+
+            // Renderowanie notatek
+            const notesList = document.getElementById('team-notes-list');
+            notesList.innerHTML = '';
+
+            if (currentTeam.notes.length === 0) {
+                notesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <p>Brak notatek w tym podzespole.</p>
+                    </div>
+                `;
+            } else {
+                currentTeam.notes.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(note => {
+                    const noteItem = document.createElement('div');
+                    noteItem.className = 'note-item';
+                    noteItem.innerHTML = `
+                        <div class="note-header">
+                            <span class="note-author">${note.author}</span>
+                            <span class="note-date">${formatDate(note.date)}</span>
+                        </div>
+                        <div class="note-content">${note.content}</div>
+                    `;
+                    notesList.appendChild(noteItem);
+                });
+            }
+        }
+
+        function handleAddMember(e) {
+            e.preventDefault();
+            if (!currentTeam) return;
+
+            const memberName = document.getElementById('member-name').value;
+
+            const newMember = {
+                id: Date.now(),
+                name: memberName
+            };
+
+            currentTeam.members.push(newMember);
+            renderTeamDetails();
+            addMemberModal.style.display = 'none';
+            addMemberForm.reset();
+            saveToLocalStorage();
+
+            showNotification(`Członek "${memberName}" został dodany do podzespołu!`, 'success');
+        }
+
+        function removeMember(memberId) {
+            if (!currentTeam) return;
+
+            if (confirm('Czy na pewno chcesz usunąć tego członka z podzespołu?')) {
+                currentTeam.members = currentTeam.members.filter(member => member.id !== memberId);
+                renderTeamDetails();
+                saveToLocalStorage();
+
+                showNotification('Członek został usunięty z podzespołu!', 'success');
+            }
+        }
+
+        function handleAddNote(e) {
+            e.preventDefault();
+            if (!currentTeam) return;
+
+            const noteAuthor = document.getElementById('note-author').value;
+            const noteDate = document.getElementById('note-date').value;
+            const noteContent = document.getElementById('note-content').value;
+
+            const newNote = {
+                id: Date.now(),
+                date: noteDate,
+                author: noteAuthor,
+                content: noteContent
+            };
+
+            currentTeam.notes.push(newNote);
+            renderTeamDetails();
+            addNoteModal.style.display = 'none';
+            addNoteForm.reset();
+            document.getElementById('note-author').value = currentUser ? currentUser.displayName : '';
+            saveToLocalStorage();
+
+            showNotification('Notatka została dodana!', 'success');
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            if (!currentTeam) return;
+
+            const taskTitle = document.getElementById('task-title').value;
+            const taskDescription = document.getElementById('task-description').value;
+            const taskAssignee = parseInt(document.getElementById('task-assignee').value);
+            const taskStatus = document.getElementById('task-status').value;
+            const taskDeadline = document.getElementById('task-deadline').value;
+
+            const newTask = {
+                id: Date.now(),
+                title: taskTitle,
+                description: taskDescription,
+                assignee: taskAssignee,
+                status: taskStatus,
+                deadline: taskDeadline
+            };
+
+            currentTeam.tasks.push(newTask);
+            renderTeamDetails();
+            addTaskModal.style.display = 'none';
+            addTaskForm.reset();
+            saveToLocalStorage();
+
+            showNotification(`Zadanie "${taskTitle}" zostało dodane!`, 'success');
+        }
+
+        function editTask(taskId) {
+            if (!currentTeam) return;
+
+            const task = currentTeam.tasks.find(t => t.id === taskId);
+            if (task) {
+                document.getElementById('edit-task-id').value = task.id;
+                document.getElementById('edit-task-title').value = task.title;
+                document.getElementById('edit-task-description').value = task.description;
+                document.getElementById('edit-task-status').value = task.status;
+                document.getElementById('edit-task-deadline').value = task.deadline;
+
+                // Wypełnij listę członków
+                const assigneeSelect = document.getElementById('edit-task-assignee');
+                assigneeSelect.innerHTML = '<option value="">Wybierz członka</option>';
+
+                if (currentTeam.members) {
+                    currentTeam.members.forEach(member => {
+                        const option = document.createElement('option');
+                        option.value = member.id;
+                        option.textContent = member.name;
+                        option.selected = (member.id === task.assignee);
+                        assigneeSelect.appendChild(option);
+                    });
+                }
+
+                editTaskModal.style.display = 'flex';
+            }
+        }
+
+        function handleEditTask(e) {
+            e.preventDefault();
+            if (!currentTeam) return;
+
+            const taskId = parseInt(document.getElementById('edit-task-id').value);
+            const taskTitle = document.getElementById('edit-task-title').value;
+            const taskDescription = document.getElementById('edit-task-description').value;
+            const taskAssignee = parseInt(document.getElementById('edit-task-assignee').value);
+            const taskStatus = document.getElementById('edit-task-status').value;
+            const taskDeadline = document.getElementById('edit-task-deadline').value;
+
+            const taskIndex = currentTeam.tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                currentTeam.tasks[taskIndex] = {
+                    id: taskId,
+                    title: taskTitle,
+                    description: taskDescription,
+                    assignee: taskAssignee,
+                    status: taskStatus,
+                    deadline: taskDeadline
+                };
+
+                renderTeamDetails();
+                editTaskModal.style.display = 'none';
+                saveToLocalStorage();
+
+                showNotification(`Zadanie "${taskTitle}" zostało zaktualizowane!`, 'success');
+            }
+        }
+
+        function removeTask(taskId) {
+            if (!currentTeam) return;
+
+            if (confirm('Czy na pewno chcesz usunąć to zadanie?')) {
+                currentTeam.tasks = currentTeam.tasks.filter(task => task.id !== taskId);
+                renderTeamDetails();
+                saveToLocalStorage();
+
+                showNotification('Zadanie zostało usunięte!', 'success');
+            }
+        }
+
+        function handleSaveDescription() {
+            if (!currentTeam) return;
+
+            const descriptionEditor = document.getElementById('team-description-editor');
+            currentTeam.description = descriptionEditor.innerHTML;
+            saveToLocalStorage();
+
+            showNotification('Opis podzespołu został zapisany!', 'success');
+        }
+
+        function handleSaveNews() {
+            if (!currentTeam) return;
+
+            const newsEditor = document.getElementById('team-news-editor');
+            currentTeam.news = newsEditor.innerHTML;
+            saveToLocalStorage();
+
+            showNotification('Aktualności podzespołu zostały zapisane!', 'success');
+        }
+
+        function handleDeleteTeam() {
+            if (!currentTeam) return;
+
+            if (confirm(`Czy na pewno chcesz usunąć podzespół "${currentTeam.name}"? Tej operacji nie można cofnąć.`)) {
+                teams = teams.filter(team => team.id !== currentTeam.id);
+                teamDetailsModal.style.display = 'none';
+                renderTeams();
+                saveToLocalStorage();
+
+                showNotification(`Podzespół "${currentTeam.name}" został usunięty!`, 'success');
+            }
+        }
+
+        // Funkcje zarządzania radami i kompetencjami
+        function handleAddCouncil(e) {
+            e.preventDefault();
+
+            const councilName = document.getElementById('council-name').value;
+            const councilDescription = document.getElementById('council-description').value;
+            const councilContact = document.getElementById('council-contact').value;
+
+            const newCouncil = {
+                id: Date.now(),
+                name: councilName,
+                description: councilDescription,
+                contact: councilContact
+            };
+
+            councils.push(newCouncil);
+            renderCouncils();
+            addCouncilModal.style.display = 'none';
+            addCouncilForm.reset();
+            saveToLocalStorage();
+
+            showNotification(`Rada/Organizacja "${councilName}" została dodana!`, 'success');
+        }
+
+        function handleAddCompetence(e) {
+            e.preventDefault();
+
+            const competenceNameValue = document.getElementById('competence-name').value;
+            const competencePeopleSelect = document.getElementById('competence-people');
+            const selectedPeople = Array.from(competencePeopleSelect.selectedOptions).map(option => option.value);
+
+            const newCompetence = {
+                id: Date.now(),
+                name: competenceNameValue,
+                people: selectedPeople
+            };
+
+            competences.push(newCompetence);
+            renderCompetences();
+            addCompetenceModal.style.display = 'none';
+            addCompetenceForm.reset();
+            saveToLocalStorage();
+
+            showNotification(`Kompetencja "${competenceNameValue}" została dodana!`, 'success');
+        }
+
+        function getAllUniqueMembers() {
+            const allMembers = new Set();
+            teams.forEach(team => {
+                team.members.forEach(member => {
+                    allMembers.add(member.name);
+                });
+            });
+            return Array.from(allMembers).sort();
+        }
+
+        function renderCouncils() {
+            councilsList.innerHTML = '';
+
+            if (councils.length === 0) {
+                councilsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-landmark"></i>
+                        <p>Brak dodanych rad i organizacji.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            councils.forEach(council => {
+                const councilItem = document.createElement('div');
+                councilItem.className = 'council-item';
+                councilItem.innerHTML = `
+                    <div>
+                        <h4>${council.name}</h4>
+                        <p>${council.description}</p>
+                        <p><strong>Kontakt:</strong> ${council.contact}</p>
+                    </div>
+                    <button class="btn-danger remove-council" data-id="${council.id}">
+                        <i class="fas fa-trash"></i>
+                        Usuń
+                    </button>
+                `;
+                councilsList.appendChild(councilItem);
+            });
+
+            // Dodanie nasłuchiwania na przyciski usuwania
+            document.querySelectorAll('.remove-council').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const councilId = parseInt(e.target.closest('.remove-council').getAttribute('data-id'));
+                    removeCouncil(councilId);
+                });
+            });
+        }
+
+        function removeCouncil(councilId) {
+            if (confirm('Czy na pewno chcesz usunąć tę radę/organizację?')) {
+                councils = councils.filter(council => council.id !== councilId);
+                renderCouncils();
+                saveToLocalStorage();
+
+                showNotification('Rada/Organizacja została usunięta!', 'success');
+            }
+        }
+
+        function renderCompetences() {
+            competencesList.innerHTML = '';
+
+            if (competences.length === 0) {
+                competencesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tools"></i>
+                        <p>Brak dodanych kompetencji.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            competences.forEach(competence => {
+                const competenceItem = document.createElement('div');
+                competenceItem.className = 'competence-item';
+                competenceItem.innerHTML = `
+                    <div>
+                        <h4>${competence.name}</h4>
+                        <p>Liczba osób: ${competence.people.length}</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="view-competence" data-id="${competence.id}">
+                            <i class="fas fa-eye"></i>
+                            Szczegóły
+                        </button>
+                        <button class="btn-danger remove-competence" data-id="${competence.id}">
+                            <i class="fas fa-trash"></i>
+                            Usuń
+                        </button>
+                    </div>
+                `;
+                competencesList.appendChild(competenceItem);
+            });
+
+            // Dodanie nasłuchiwania na przyciski
+            document.querySelectorAll('.view-competence').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const competenceId = parseInt(e.target.closest('.view-competence').getAttribute('data-id'));
+                    viewCompetence(competenceId);
+                });
+            });
+
+            document.querySelectorAll('.remove-competence').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const competenceId = parseInt(e.target.closest('.remove-competence').getAttribute('data-id'));
+                    removeCompetence(competenceId);
+                });
+            });
+        }
+
+        function viewCompetence(competenceId) {
+            currentCompetence = competences.find(c => c.id === competenceId);
+            if (currentCompetence) {
+                competenceName.textContent = currentCompetence.name;
+
+                // Wyświetl listę osób
+                competencePeopleList.innerHTML = '';
+
+                if (currentCompetence.people.length === 0) {
+                    competencePeopleList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Brak osób z tą kompetencją.</p>
+                        </div>
+                    `;
+                } else {
+                    currentCompetence.people.forEach(person => {
+                        const personItem = document.createElement('li');
+                        personItem.className = 'person-item';
+                        personItem.innerHTML = `
+                            <span>${person}</span>
+                        `;
+                        competencePeopleList.appendChild(personItem);
+                    });
+                }
+
+                competenceDetails.classList.remove('hidden');
+            }
+        }
+
+        function removeCompetence(competenceId) {
+            if (confirm('Czy na pewno chcesz usunąć tę kompetencję?')) {
+                competences = competences.filter(competence => competence.id !== competenceId);
+                renderCompetences();
+                saveToLocalStorage();
+
+                if (currentCompetence && currentCompetence.id === competenceId) {
+                    competenceDetails.classList.add('hidden');
+                    currentCompetence = null;
+                }
+
+                showNotification('Kompetencja została usunięta!', 'success');
+            }
+        }
+
+        function filterCompetences() {
+            const filterValue = competenceFilter.value.toLowerCase();
+
+            document.querySelectorAll('.competence-item').forEach(item => {
+                const competenceName = item.querySelector('h4').textContent.toLowerCase();
+                if (competenceName.includes(filterValue)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Funkcje eksportu i importu
+        function handleExportTeam() {
+            if (!currentTeam) return;
+
+            const dataStr = JSON.stringify(currentTeam, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `${currentTeam.name.replace(/\s+/g, '_')}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+
+            showNotification(`Dane podzespołu "${currentTeam.name}" zostały wyeksportowane!`, 'success');
+        }
+
+        function handleExportAll() {
+            const allData = {
+                teams: teams,
+                councils: councils,
+                competences: competences
+            };
+
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `teamorganizer_backup_${formatDateForExport(new Date())}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+
+            showNotification('Wszystkie dane zostały wyeksportowane!', 'success');
+        }
+
+        function handleImportTeam() {
+            const fileInput = document.getElementById('import-team-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showNotification('Proszę wybrać plik do importu', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedTeam = JSON.parse(e.target.result);
+
+                    // Sprawdź czy to poprawny zespół
+                    if (!importedTeam.name || !importedTeam.members) {
+                        throw new Error('Nieprawidłowy format pliku');
+                    }
+
+                    // Nadaj nowe ID aby uniknąć konfliktów
+                    importedTeam.id = Date.now();
+
+                    teams.push(importedTeam);
+                    renderTeams();
+                    saveToLocalStorage();
+
+                    fileInput.value = '';
+
+                    showNotification(`Podzespół "${importedTeam.name}" został zaimportowany!`, 'success');
+                } catch (error) {
+                    showNotification('Błąd podczas importowania pliku: ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Funkcje do zapisywania i wczytywania danych
+        function saveToLocalStorage() {
+            const data = {
+                teams: teams,
+                councils: councils,
+                competences: competences,
+                currentUser: currentUser
+            };
+
+            localStorage.setItem('teamOrganizerData', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const data = localStorage.getItem('teamOrganizerData');
+
+            if (data) {
+                try {
+                    const parsedData = JSON.parse(data);
+                    teams = parsedData.teams || [];
+                    councils = parsedData.councils || [];
+                    competences = parsedData.competences || [];
+                    currentUser = parsedData.currentUser || null;
+
+                    if (currentUser) {
+                        updateUIAfterAuth();
+                    }
+                } catch (error) {
+                    console.error('Błąd podczas wczytywania danych:', error);
+                }
+            }
+        }
+
+        // Pomocnicze funkcje
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('pl-PL', options);
+        }
+
+        function formatDateForExport(date) {
+            return date.toISOString().slice(0, 10).replace(/-/g, '');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+
+            let icon = '';
+            switch (type) {
+                case 'success':
+                    icon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'error':
+                    icon = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                default:
+                    icon = '<i class="fas fa-info-circle"></i>';
+            }
+
+            notification.innerHTML = `${icon} ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Ładowanie przykładowych danych
+        function loadSampleData() {
+            // Przykładowe podzespoły
+            teams = [
+                {
+                    id: 1,
+                    name: "Zespół Developerski",
+                    icon: "💻",
+                    members: [
+                        { id: 1, name: "Anna Nowak" },
+                        { id: 2, name: "Piotr Wiśniewski" },
+                        { id: 3, name: "Katarzyna Kowalczyk" }
+                    ],
+                    description: "Zespół odpowiedzialny za rozwój aplikacji webowych.",
+                    news: "<h3>Najnowsze aktualności</h3><p>Rozpoczęliśmy pracę nad nową wersją aplikacji. Planowany termin zakończenia: koniec kwartału.</p>",
+                    tasks: [
+                        {
+                            id: 1,
+                            title: "Przygotowanie specyfikacji API",
+                            description: "Stworzenie dokumentacji API dla nowych endpointów",
+                            assignee: 1,
+                            status: "inprogress",
+                            deadline: "2023-06-30"
+                        },
+                        {
+                            id: 2,
+                            title: "Refaktoryzacja modułu uwierzytelniania",
+                            description: "Przepisanie modułu uwierzytelniania na nową wersję frameworka",
+                            assignee: 2,
+                            status: "todo",
+                            deadline: "2023-07-15"
+                        }
+                    ],
+                    notes: [
+                        { id: 1, date: "2023-05-15", author: "Anna Nowak", content: "Spotkanie kickoff nowego projektu." },
+                        { id: 2, date: "2023-05-22", author: "Piotr Wiśniewski", content: "Przegląd postępów w backendzie." }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Zespół Marketingowy",
+                    icon: "📊",
+                    members: [
+                        { id: 4, name: "Tomasz Lewandowski" },
+                        { id: 5, name: "Magdalena Kamińska" }
+                    ],
+                    description: "Zespół odpowiedzialny za promocję i wizerunek marki.",
+                    news: "<h3>Plan na nadchodzący miesiąc</h3><p>Przygotowujemy nową kampanię reklamową dla produktu X. Spotkanie planistyczne w przyszły wtorek.</p>",
+                    tasks: [
+                        {
+                            id: 3,
+                            title: "Przygotowanie strategii social media",
+                            description: "Opracowanie comiesięcznego planu postów na media społecznościowe",
+                            assignee: 4,
+                            status: "done",
+                            deadline: "2023-05-20"
+                        }
+                    ],
+                    notes: [
+                        { id: 3, date: "2023-05-10", author: "Tomasz Lewandowski", content: "Planowanie kampanii Q3." }
+                    ]
+                }
+            ];
+
+            // Przykładowe rady i organizacje
+            councils = [
+                {
+                    id: 1,
+                    name: "Rada Programowa",
+                    description: "Odpowiada za strategiczne decyzje dotyczące kierunku rozwoju produktu.",
+                    contact: "Anna Nowak"
+                },
+                {
+                    id: 2,
+                    name: "Stowarzyszenie Developerów",
+                    description: "Organizacja zrzeszająca programistów z regionu.",
+                    contact: "Piotr Wiśniewski"
+                }
+            ];
+
+            // Przykładowe kompetencje
+            competences = [
+                {
+                    id: 1,
+                    name: "JavaScript",
+                    people: ["Anna Nowak", "Katarzyna Kowalczyk"]
+                },
+                {
+                    id: 2,
+                    name: "Python",
+                    people: ["Piotr Wiśniewski"]
+                },
+                {
+                    id: 3,
+                    name: "UI/UX",
+                    people: ["Katarzyna Kowalczyk"]
+                }
+            ];
+        }
+
+        // Inicjalizacja aplikacji po załadowaniu DOM
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+
+</html>
