@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamOrganizer - Zarządzanie Zespołami</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👥</text></svg>" type="image/svg+xml">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👥</text></svg>"
+        type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Dodanie Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -14,10 +17,13 @@
         :root {
             --primary-color: #6A0DAD;
             --primary-light: #9B30FF;
-            --secondary-color: #4B0082;
-            --secondary-light: #7A67EE;
-            --accent-color: #CC00CC;
-            --accent-light: #FF33FF;
+            --primary-dark: #4B0082;
+            --secondary-color: #8A2BE2;
+            --secondary-light: #9370DB;
+            --secondary-dark: #483D8B;
+            --accent-color: #DA70D6;
+            --accent-light: #EE82EE;
+            --accent-dark: #BA55D3;
             --background-dark: #1a1a1a;
             --surface-dark: #2d2d2d;
             --card-dark: #3c3c3c;
@@ -25,21 +31,23 @@
             --text-secondary: #b0b0b0;
             --border-dark: #444;
             --border-light: #666;
-            --success-color: #4B0082;
-            --warning-color: #9B30FF;
-            --info-color: #6A0DAD;
-            --border-radius: 12px;
-            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --info-color: #2196F3;
+            --border-radius: 16px;
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-light) 100%);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Roboto', sans-serif;
         }
-        
+
         body {
             background: linear-gradient(135deg, var(--background-dark) 0%, #2a2a2a 100%);
             color: var(--text-primary);
@@ -47,13 +55,13 @@
             min-height: 100vh;
             padding-bottom: 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         header {
             display: flex;
             justify-content: space-between;
@@ -66,8 +74,10 @@
             z-index: 100;
             border-radius: 0 0 var(--border-radius) var(--border-radius);
             margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-dark);
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
@@ -75,15 +85,15 @@
             font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary-light);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        
+
         .logo-icon {
             font-size: 2rem;
         }
-        
+
         .login-btn {
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            background: var(--gradient-primary);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -94,33 +104,34 @@
             gap: 10px;
             font-weight: 600;
             transition: var(--transition);
-            box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
+            box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
         }
-        
+
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(106, 13, 173, 0.4);
+            box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
         }
-        
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        
+
         .user-avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             border: 2px solid var(--primary-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
         }
-        
+
         .user-name {
             font-weight: 500;
             color: var(--text-primary);
         }
-        
+
         .tabs {
             display: flex;
             margin: 25px 0;
@@ -128,8 +139,9 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--box-shadow);
+            border: 1px solid var(--border-dark);
         }
-        
+
         .tab {
             padding: 18px 30px;
             cursor: pointer;
@@ -140,7 +152,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .tab::after {
             content: '';
             position: absolute;
@@ -153,20 +165,20 @@
             border-radius: 2px;
             transition: var(--transition);
         }
-        
+
         .tab.active {
             background-color: rgba(106, 13, 173, 0.15);
             color: var(--primary-light);
         }
-        
+
         .tab.active::after {
             width: 80%;
         }
-        
+
         .tab:hover:not(.active) {
             background-color: var(--card-dark);
         }
-        
+
         .tab-content {
             display: none;
             background-color: var(--surface-dark);
@@ -175,17 +187,25 @@
             box-shadow: var(--box-shadow);
             margin-bottom: 30px;
             animation: fadeIn 0.4s ease;
+            border: 1px solid var(--border-dark);
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         .sub-tabs {
             display: flex;
             margin-bottom: 25px;
@@ -193,8 +213,9 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             flex-wrap: wrap;
+            border: 1px solid var(--border-dark);
         }
-        
+
         .sub-tab {
             padding: 15px 25px;
             cursor: pointer;
@@ -204,23 +225,23 @@
             text-align: center;
             min-width: 140px;
         }
-        
+
         .sub-tab.active {
-            background-color: var(--secondary-color);
+            background: var(--gradient-primary);
             color: white;
         }
-        
+
         .sub-tab:hover:not(.active) {
-            background-color: #5a4d8a;
+            background-color: rgba(106, 13, 173, 0.2);
         }
-        
+
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-top: 25px;
         }
-        
+
         .team-card {
             background-color: var(--card-dark);
             border-radius: var(--border-radius);
@@ -231,13 +252,13 @@
             border: 1px solid var(--border-dark);
             position: relative;
         }
-        
+
         .team-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
             border-color: var(--primary-light);
         }
-        
+
         .team-icon {
             height: 140px;
             background: linear-gradient(45deg, var(--surface-dark), var(--card-dark));
@@ -248,24 +269,24 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .team-icon img {
             max-width: 100%;
             max-height: 100%;
             object-fit: cover;
         }
-        
+
         .team-info {
             padding: 20px;
         }
-        
+
         .team-name {
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--text-primary);
             font-size: 1.3rem;
         }
-        
+
         .team-members-count {
             color: var(--text-secondary);
             font-size: 0.95rem;
@@ -273,19 +294,21 @@
             align-items: center;
             gap: 6px;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--text-primary);
         }
-        
-        input, textarea, select {
+
+        input,
+        textarea,
+        select {
             width: 100%;
             padding: 14px 16px;
             border: 2px solid var(--border-dark);
@@ -295,15 +318,17 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        
-        input:focus, textarea:focus, select:focus {
+
+        input:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.2);
         }
-        
+
         button {
-            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            background: var(--gradient-primary);
             color: white;
             border: none;
             padding: 14px 26px;
@@ -315,43 +340,43 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 14px rgba(106, 13, 173, 0.4);
         }
-        
+
         .btn-danger {
             background: linear-gradient(to right, var(--accent-color), var(--accent-light));
         }
-        
+
         .btn-danger:hover {
-            box-shadow: 0 6px 14px rgba(204, 0, 204, 0.4);
+            box-shadow: 0 6px 14px rgba(218, 112, 214, 0.4);
         }
-        
+
         .btn-success {
             background: linear-gradient(to right, var(--secondary-color), var(--secondary-light));
         }
-        
+
         .btn-success:hover {
-            box-shadow: 0 6px 14px rgba(75, 0, 130, 0.4);
+            box-shadow: 0 6px 14px rgba(138, 43, 226, 0.4);
         }
-        
+
         .btn-secondary {
             background: var(--card-dark);
             color: var(--text-primary);
         }
-        
+
         .btn-secondary:hover {
             background: var(--border-dark);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
         }
-        
+
         .member-list {
             list-style: none;
             margin-top: 20px;
         }
-        
+
         .member-item {
             padding: 15px;
             border-bottom: 1px solid var(--border-dark);
@@ -363,12 +388,12 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
         }
-        
+
         .member-item:hover {
             background-color: rgba(106, 13, 173, 0.1);
             transform: translateX(5px);
         }
-        
+
         .note-editor {
             border: 2px solid var(--border-dark);
             border-radius: var(--border-radius);
@@ -379,12 +404,12 @@
             color: var(--text-primary);
             transition: var(--transition);
         }
-        
+
         .note-editor:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-        
+
         .note-item {
             padding: 20px;
             border: 1px solid var(--border-dark);
@@ -393,34 +418,36 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
         }
-        
+
         .note-item:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-        
+
         .note-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .note-author {
             font-weight: 600;
             color: var(--primary-light);
         }
-        
+
         .note-date {
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
-        .competence-list, .council-list {
+
+        .competence-list,
+        .council-list {
             margin-top: 25px;
         }
-        
-        .competence-item, .council-item {
+
+        .competence-item,
+        .council-item {
             padding: 20px;
             border: 1px solid var(--border-dark);
             margin-bottom: 20px;
@@ -431,12 +458,13 @@
             align-items: center;
             transition: var(--transition);
         }
-        
-        .competence-item:hover, .council-item:hover {
+
+        .competence-item:hover,
+        .council-item:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-        
+
         .competence-details {
             margin-top: 20px;
             padding: 20px;
@@ -444,12 +472,12 @@
             border-radius: var(--border-radius);
             border: 1px solid var(--border-dark);
         }
-        
+
         .person-list {
             list-style: none;
             margin-top: 15px;
         }
-        
+
         .person-item {
             padding: 12px 15px;
             border-bottom: 1px solid var(--border-dark);
@@ -457,15 +485,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .person-item:last-child {
             border-bottom: none;
         }
-        
+
         .task-list {
             margin-top: 20px;
         }
-        
+
         .task-item {
             padding: 20px;
             border: 1px solid var(--border-dark);
@@ -474,43 +502,43 @@
             border-radius: var(--border-radius);
             transition: var(--transition);
         }
-        
+
         .task-item:hover {
             border-color: var(--primary-light);
             transform: translateY(-2px);
         }
-        
+
         .task-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .task-title {
             font-weight: 700;
             font-size: 1.2rem;
             color: var(--text-primary);
         }
-        
+
         .task-assignee {
             color: var(--primary-light);
             font-weight: 500;
         }
-        
+
         .task-description {
             margin-bottom: 15px;
             color: var(--text-secondary);
             line-height: 1.5;
         }
-        
+
         .task-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 15px;
         }
-        
+
         .task-status {
             display: inline-flex;
             align-items: center;
@@ -520,22 +548,22 @@
             font-size: 0.85rem;
             font-weight: 600;
         }
-        
+
         .status-todo {
-            background-color: rgba(204, 0, 204, 0.2);
+            background-color: rgba(218, 112, 214, 0.2);
             color: var(--accent-light);
         }
-        
+
         .status-inprogress {
-            background-color: rgba(155, 48, 255, 0.2);
+            background-color: rgba(255, 193, 7, 0.2);
             color: var(--warning-color);
         }
-        
+
         .status-done {
-            background-color: rgba(75, 0, 130, 0.2);
-            color: var(--secondary-light);
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
         }
-        
+
         .task-deadline {
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -543,7 +571,7 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -559,7 +587,7 @@
             padding: 20px;
             animation: fadeIn 0.3s ease;
         }
-        
+
         .modal-content {
             background-color: var(--surface-dark);
             padding: 30px;
@@ -572,7 +600,7 @@
             border: 1px solid var(--border-dark);
             position: relative;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -581,13 +609,13 @@
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-dark);
         }
-        
+
         .modal-title {
             font-size: 1.6rem;
             color: var(--text-primary);
             font-weight: 700;
         }
-        
+
         .close-modal {
             font-size: 1.8rem;
             cursor: pointer;
@@ -600,50 +628,50 @@
             justify-content: center;
             border-radius: 50%;
         }
-        
+
         .close-modal:hover {
             color: var(--accent-light);
-            background-color: rgba(204, 0, 204, 0.1);
+            background-color: rgba(218, 112, 214, 0.1);
         }
-        
+
         .team-tab-content {
             display: none;
             padding: 20px 0;
             animation: fadeIn 0.4s ease;
         }
-        
+
         .team-tab-content.active {
             display: block;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 12px;
             margin-top: 20px;
             flex-wrap: wrap;
         }
-        
+
         .hidden {
             display: none;
         }
-        
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-secondary);
         }
-        
+
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 15px;
             opacity: 0.5;
         }
-        
+
         .empty-state p {
             font-size: 1.1rem;
             margin-bottom: 20px;
         }
-        
+
         .icon-preview {
             width: 80px;
             height: 80px;
@@ -655,12 +683,12 @@
             margin: 15px auto;
             overflow: hidden;
         }
-        
+
         .icon-preview img {
             max-width: 100%;
             max-height: 100%;
         }
-        
+
         .section-title {
             font-size: 1.5rem;
             color: var(--text-primary);
@@ -669,7 +697,7 @@
             border-bottom: 2px solid var(--primary-color);
             display: inline-block;
         }
-        
+
         .card {
             background-color: var(--card-dark);
             border-radius: var(--border-radius);
@@ -678,7 +706,7 @@
             box-shadow: var(--box-shadow);
             border: 1px solid var(--border-dark);
         }
-        
+
         .card-title {
             font-size: 1.3rem;
             color: var(--text-primary);
@@ -687,81 +715,90 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .help-text {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-top: 5px;
-            font-style: italic;
         }
-        
+
         .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(106, 13, 173, 0.3);
             border-radius: 50%;
-            border-top-color: #fff;
+            border-top-color: var(--primary-color);
             animation: spin 1s ease-in-out infinite;
         }
-        
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
-        .multi-select {
-            height: 150px;
-            overflow-y: auto;
-        }
-        
-        .multi-select option {
-            padding: 8px 12px;
-            margin: 4px 0;
-            border-radius: 4px;
-            background-color: var(--card-dark);
-        }
-        
-        .multi-select option:checked {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
+
         @media (max-width: 768px) {
             .team-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .tabs, .sub-tabs {
+
+            .tabs,
+            .sub-tabs {
                 flex-direction: column;
             }
-            
+
             .modal-content {
                 padding: 20px;
             }
-            
+
             .action-buttons {
                 flex-direction: column;
             }
-            
+
             .task-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .task-meta {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
-        
+
         /* Animation for notifications */
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
-        
+
         .notification {
             position: fixed;
             top: 20px;
@@ -772,25 +809,26 @@
             font-weight: 500;
             z-index: 1001;
             animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .notification.success {
-            background-color: var(--secondary-color);
+            background-color: var(--success-color);
         }
-        
+
         .notification.error {
             background-color: var(--accent-color);
         }
-        
+
         .notification.info {
             background-color: var(--primary-color);
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logo">
@@ -814,524 +852,534 @@
     </header>
 
     <div class="container">
-        <div class="tabs">
-            <div class="tab active" data-tab="teams">
-                <i class="fas fa-layer-group"></i>
-                <span>Podzespoły</span>
-            </div>
-            <div class="tab" data-tab="organization">
-                <i class="fas fa-users"></i>
-                <span>Zespół</span>
-            </div>
+        <div id="loading-screen" class="loading hidden">
+            <div class="loading-spinner"></div>
         </div>
 
-        <!-- Zakładka Podzespoły -->
-        <div id="teams-tab" class="tab-content active">
-            <h2 class="section-title">
-                <i class="fas fa-layer-group"></i>
-                Podzespoły
-            </h2>
-            <p>Zarządzaj podzespołami lub utwórz nowy.</p>
-            <button id="create-team-btn" class="btn-success">
-                <i class="fas fa-plus"></i>
-                Utwórz nowy podzespół
-            </button>
-            
-            <div class="team-grid" id="teams-container">
-                <!-- Karty podzespołów będą dodawane dynamicznie -->
-            </div>
-        </div>
-
-        <!-- Zakładka Zespół -->
-        <div id="organization-tab" class="tab-content">
-            <div class="sub-tabs">
-                <div class="sub-tab active" data-subtab="councils">
-                    <i class="fas fa-landmark"></i>
-                    Rady i Organizacje
+        <div id="app-content" class="hidden">
+            <div class="tabs">
+                <div class="tab active" data-tab="teams">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Podzespoły</span>
                 </div>
-                <div class="sub-tab" data-subtab="competences">
-                    <i class="fas fa-tools"></i>
-                    Kompetencje
+                <div class="tab" data-tab="organization">
+                    <i class="fas fa-users"></i>
+                    <span>Zespół</span>
                 </div>
             </div>
 
-            <!-- Podzakładka Rady i Organizacje -->
-            <div id="councils-subtab" class="team-tab-content active">
-                <h3 class="section-title">
-                    <i class="fas fa-landmark"></i>
-                    Rady i Organizacje
-                </h3>
-                <p>Dodaj i zarządzaj radami oraz organizacjami zespołu.</p>
-                <button id="add-council-btn" class="btn-success">
+            <!-- Zakładka Podzespoły -->
+            <div id="teams-tab" class="tab-content active">
+                <h2 class="section-title">
+                    <i class="fas fa-layer-group"></i>
+                    Podzespoły
+                </h2>
+                <p>Zarządzaj podzespołami lub utwórz nowy.</p>
+                <button id="create-team-btn" class="btn-success">
                     <i class="fas fa-plus"></i>
-                    Dodaj organizację/radę
+                    Utwórz nowy podzespół
                 </button>
-                
-                <div id="councils-list" class="council-list">
-                    <!-- Lista rad i organizacji będzie dodawana dynamicznie -->
+
+                <div class="team-grid" id="teams-container">
+                    <!-- Karty podzespołów będą dodawane dynamicznie -->
                 </div>
             </div>
 
-            <!-- Podzakładka Kompetencje -->
-            <div id="competences-subtab" class="team-tab-content">
-                <h3 class="section-title">
-                    <i class="fas fa-tools"></i>
-                    Kompetencje
-                </h3>
-                <p>Zarządzaj kompetencjami członków zespołu.</p>
-                <button id="add-competence-btn" class="btn-success">
-                    <i class="fas fa-plus"></i>
-                    Dodaj kompetencję
-                </button>
-                
-                <div class="form-group">
-                    <input type="text" id="competence-filter" placeholder="Filtruj kompetencje...">
-                </div>
-                
-                <div id="competences-list" class="competence-list">
-                    <!-- Lista kompetencji będzie dodawana dynamicznie -->
-                </div>
-                
-                <div id="competence-details" class="competence-details hidden">
-                    <h4>Szczegóły kompetencji: <span id="competence-name"></span></h4>
-                    <h5>Osoby z tą kompetencją:</h5>
-                    <ul id="competence-people-list" class="person-list">
-                        <!-- Lista osób z kompetencją będzie dodawana dynamicznie -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal do tworzenia podzespołu -->
-        <div id="create-team-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Utwórz nowy podzespół</h3>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <form id="create-team-form">
-                    <div class="form-group">
-                        <label for="team-name">Nazwa podzespołu</label>
-                        <input type="text" id="team-name" required placeholder="Wprowadź nazwę podzespołu">
-                    </div>
-                    <div class="form-group">
-                        <label for="team-icon">Ikona podzespołu</label>
-                        <input type="file" id="team-icon" accept="image/*">
-                        <div class="icon-preview" id="icon-preview">
-                            <i class="fas fa-image"></i>
-                        </div>
-                        <div class="help-text">Dodaj ikonę dla swojego podzespołu (opcjonalnie)</div>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Utwórz
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal szczegółów podzespołu -->
-        <div id="team-details-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="team-modal-title">Szczegóły podzespołu</h3>
-                    <span class="close-modal">&times;</span>
-                </div>
-                
+            <!-- Zakładka Zespół -->
+            <div id="organization-tab" class="tab-content">
                 <div class="sub-tabs">
-                    <div class="sub-tab active" data-team-tab="members">
-                        <i class="fas fa-users"></i>
-                        Członkowie
+                    <div class="sub-tab active" data-subtab="councils">
+                        <i class="fas fa-landmark"></i>
+                        Rady i Organizacje
                     </div>
-                    <div class="sub-tab" data-team-tab="description">
-                        <i class="fas fa-file-alt"></i>
-                        Opis
-                    </div>
-                    <div class="sub-tab" data-team-tab="news">
-                        <i class="fas fa-newspaper"></i>
-                        Aktualności
-                    </div>
-                    <div class="sub-tab" data-team-tab="tasks">
-                        <i class="fas fa-tasks"></i>
-                        Zadania
-                    </div>
-                    <div class="sub-tab" data-team-tab="notes">
-                        <i class="fas fa-sticky-note"></i>
-                        Notatki
-                    </div>
-                    <div class="sub-tab" data-team-tab="import-export">
-                        <i class="fas fa-file-export"></i>
-                        Eksport/Import
-                    </div>
-                    <div class="sub-tab" data-team-tab="delete">
-                        <i class="fas fa-trash"></i>
-                        Usuń
+                    <div class="sub-tab" data-subtab="competences">
+                        <i class="fas fa-tools"></i>
+                        Kompetencje
                     </div>
                 </div>
-                
-                <!-- Zakładka Członkowie -->
-                <div id="team-members-tab" class="team-tab-content active">
-                    <h4 class="card-title">
-                        <i class="fas fa-users"></i>
-                        Członkowie podzespołu
-                    </h4>
-                    <p>Zarządzaj członkami podzespołu.</p>
-                    <button id="add-member-btn" class="btn-success">
+
+                <!-- Podzakładka Rady i Organizacje -->
+                <div id="councils-subtab" class="team-tab-content active">
+                    <h3 class="section-title">
+                        <i class="fas fa-landmark"></i>
+                        Rady i Organizacje
+                    </h3>
+                    <p>Dodaj i zarządzaj radami oraz organizacjami zespołu.</p>
+                    <button id="add-council-btn" class="btn-success">
                         <i class="fas fa-plus"></i>
-                        Dodaj członka
+                        Dodaj organizację/radę
                     </button>
-                    
-                    <ul class="member-list" id="team-members-list">
-                        <!-- Lista członków będzie dodawana dynamicznie -->
-                    </ul>
-                </div>
-                
-                <!-- Zakładka Opis -->
-                <div id="team-description-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-file-alt"></i>
-                        Opis podzespołu
-                    </h4>
-                    <p>Dodaj opis podzespołu i jego działań.</p>
-                    <div class="note-editor" contenteditable="true" id="team-description-editor"></div>
-                    <div class="action-buttons">
-                        <button id="save-description-btn">
-                            <i class="fas fa-save"></i>
-                            Zapisz opis
-                        </button>
+
+                    <div id="councils-list" class="council-list">
+                        <!-- Lista rad i organizacji będzie dodawana dynamicznie -->
                     </div>
                 </div>
-                
-                <!-- Zakładka Aktualności -->
-                <div id="team-news-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-newspaper"></i>
-                        Aktualności podzespołu
-                    </h4>
-                    <p>Dodaj najnowsze informacje i zmiany w podzespole.</p>
-                    <div class="note-editor" contenteditable="true" id="team-news-editor"></div>
-                    <div class="action-buttons">
-                        <button id="save-news-btn">
-                            <i class="fas fa-save"></i>
-                            Zapisz aktualności
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Zakładka Zadania -->
-                <div id="team-tasks-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-tasks"></i>
-                        Zadania podzespołu
-                    </h4>
-                    <p>Dodaj i zarządzaj zadaniami dla członków podzespołu.</p>
-                    <button id="add-task-btn" class="btn-success">
+
+                <!-- Podzakładka Kompetencje -->
+                <div id="competences-subtab" class="team-tab-content">
+                    <h3 class="section-title">
+                        <i class="fas fa-tools"></i>
+                        Kompetencje
+                    </h3>
+                    <p>Zarządzaj kompetencjami członków zespołu.</p>
+                    <button id="add-competence-btn" class="btn-success">
                         <i class="fas fa-plus"></i>
-                        Dodaj zadanie
+                        Dodaj kompetencję
                     </button>
-                    
-                    <div id="team-tasks-list" class="task-list">
-                        <!-- Lista zadań będzie dodawana dynamicznie -->
-                    </div>
-                </div>
-                
-                <!-- Zakładka Notatki -->
-                <div id="team-notes-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-sticky-note"></i>
-                        Notatki ze spotkań
-                    </h4>
-                    <p>Dodawaj i przeglądaj notatki ze spotkań podzespołu.</p>
-                    <button id="add-note-btn" class="btn-success">
-                        <i class="fas fa-plus"></i>
-                        Dodaj notatkę
-                    </button>
-                    
-                    <div id="team-notes-list">
-                        <!-- Lista notatek będzie dodawana dynamicznie -->
-                    </div>
-                </div>
-                
-                <!-- Zakładka Eksport/Import -->
-                <div id="team-import-export-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-file-export"></i>
-                        Eksport/Import danych
-                    </h4>
-                    <p>Eksportuj lub importuj dane podzespołu.</p>
-                    <div class="action-buttons">
-                        <button id="export-team-btn">
-                            <i class="fas fa-download"></i>
-                            Eksportuj dane podzespołu
-                        </button>
-                        <button id="export-all-btn" class="btn-secondary">
-                            <i class="fas fa-download"></i>
-                            Eksportuj wszystkie dane
-                        </button>
-                    </div>
-                    
+
                     <div class="form-group">
-                        <label for="import-team-file">Importuj dane podzespołu</label>
-                        <input type="file" id="import-team-file" accept=".json">
-                        <div class="help-text">Wybierz plik JSON wyeksportowany wcześniej z aplikacji</div>
+                        <input type="text" id="competence-filter" placeholder="Filtruj kompetencje...">
                     </div>
-                    <div class="action-buttons">
-                        <button id="import-team-btn">
-                            <i class="fas fa-upload"></i>
-                            Importuj
-                        </button>
+
+                    <div id="competences-list" class="competence-list">
+                        <!-- Lista kompetencji będzie dodawana dynamicznie -->
+                    </div>
+
+                    <div id="competence-details" class="competence-details hidden">
+                        <h4>Szczegóły kompetencji: <span id="competence-name"></span></h4>
+                        <h5>Osoby z tą kompetencją:</h5>
+                        <ul id="competence-people-list" class="person-list">
+                            <!-- Lista osób z kompetencją będzie dodawana dynamicznie -->
+                        </ul>
                     </div>
                 </div>
-                
-                <!-- Zakładka Usuń -->
-                <div id="team-delete-tab" class="team-tab-content">
-                    <h4 class="card-title">
-                        <i class="fas fa-trash"></i>
-                        Usuwanie podzespołu
-                    </h4>
-                    <p>Usunięcie podzespołu jest nieodwracalne. Wszystkie dane związane z tym podzespołem zostaną trwale usunięte.</p>
-                    <div class="action-buttons">
-                        <button id="delete-team-btn" class="btn-danger">
+            </div>
+
+            <!-- Modal do tworzenia podzespołu -->
+            <div id="create-team-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Utwórz nowy podzespół</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="create-team-form">
+                        <div class="form-group">
+                            <label for="team-name">Nazwa podzespołu</label>
+                            <input type="text" id="team-name" required placeholder="Wprowadź nazwę podzespołu">
+                        </div>
+                        <div class="form-group">
+                            <label for="team-icon">Ikona podzespołu</label>
+                            <input type="file" id="team-icon" accept="image/*">
+                            <div class="icon-preview" id="icon-preview">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="help-text">Dodaj ikonę dla swojego podzespołu (opcjonalnie)</div>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Utwórz
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal szczegółów podzespołu -->
+            <div id="team-details-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="team-modal-title">Szczegóły podzespołu</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+
+                    <div class="sub-tabs">
+                        <div class="sub-tab active" data-team-tab="members">
+                            <i class="fas fa-users"></i>
+                            Członkowie
+                        </div>
+                        <div class="sub-tab" data-team-tab="description">
+                            <i class="fas fa-file-alt"></i>
+                            Opis
+                        </div>
+                        <div class="sub-tab" data-team-tab="news">
+                            <i class="fas fa-newspaper"></i>
+                            Aktualności
+                        </div>
+                        <div class="sub-tab" data-team-tab="tasks">
+                            <i class="fas fa-tasks"></i>
+                            Zadania
+                        </div>
+                        <div class="sub-tab" data-team-tab="notes">
+                            <i class="fas fa-sticky-note"></i>
+                            Notatki
+                        </div>
+                        <div class="sub-tab" data-team-tab="import-export">
+                            <i class="fas fa-file-export"></i>
+                            Eksport/Import
+                        </div>
+                        <div class="sub-tab" data-team-tab="delete">
                             <i class="fas fa-trash"></i>
-                            Usuń podzespół
+                            Usuń
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Członkowie -->
+                    <div id="team-members-tab" class="team-tab-content active">
+                        <h4 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Członkowie podzespołu
+                        </h4>
+                        <p>Zarządzaj członkami podzespołu.</p>
+                        <button id="add-member-btn" class="btn-success">
+                            <i class="fas fa-plus"></i>
+                            Dodaj członka
                         </button>
+
+                        <ul class="member-list" id="team-members-list">
+                            <!-- Lista członków będzie dodawana dynamicznie -->
+                        </ul>
+                    </div>
+
+                    <!-- Zakładka Opis -->
+                    <div id="team-description-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-file-alt"></i>
+                            Opis podzespołu
+                        </h4>
+                        <p>Dodaj opis podzespołu i jego działań.</p>
+                        <div class="note-editor" contenteditable="true" id="team-description-editor"></div>
+                        <div class="action-buttons">
+                            <button id="save-description-btn">
+                                <i class="fas fa-save"></i>
+                                Zapisz opis
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Aktualności -->
+                    <div id="team-news-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-newspaper"></i>
+                            Aktualności podzespołu
+                        </h4>
+                        <p>Dodaj najnowsze informacje i zmiany w podzespole.</p>
+                        <div class="note-editor" contenteditable="true" id="team-news-editor"></div>
+                        <div class="action-buttons">
+                            <button id="save-news-btn">
+                                <i class="fas fa-save"></i>
+                                Zapisz aktualności
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Zadania -->
+                    <div id="team-tasks-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-tasks"></i>
+                            Zadania podzespołu
+                        </h4>
+                        <p>Dodaj i zarządzaj zadaniami dla członków podzespołu.</p>
+                        <button id="add-task-btn" class="btn-success">
+                            <i class="fas fa-plus"></i>
+                            Dodaj zadanie
+                        </button>
+
+                        <div id="team-tasks-list" class="task-list">
+                            <!-- Lista zadań będzie dodawana dynamicznie -->
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Notatki -->
+                    <div id="team-notes-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-sticky-note"></i>
+                            Notatki ze spotkań
+                        </h4>
+                        <p>Dodawaj i przeglądaj notatki ze spotkań podzespołu.</p>
+                        <button id="add-note-btn" class="btn-success">
+                            <i class="fas fa-plus"></i>
+                            Dodaj notatkę
+                        </button>
+
+                        <div id="team-notes-list">
+                            <!-- Lista notatek będzie dodawana dynamicznie -->
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Eksport/Import -->
+                    <div id="team-import-export-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-file-export"></i>
+                            Eksport/Import danych
+                        </h4>
+                        <p>Eksportuj lub importuj dane podzespołu.</p>
+                        <div class="action-buttons">
+                            <button id="export-team-btn">
+                                <i class="fas fa-download"></i>
+                                Eksportuj dane podzespołu
+                            </button>
+                            <button id="export-all-btn" class="btn-secondary">
+                                <i class="fas fa-download"></i>
+                                Eksportuj wszystkie dane
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="import-team-file">Importuj dane podzespołu</label>
+                            <input type="file" id="import-team-file" accept=".json">
+                            <div class="help-text">Wybierz plik JSON wyeksportowany wcześniej z aplikacji</div>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="import-team-btn">
+                                <i class="fas fa-upload"></i>
+                                Importuj
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Zakładka Usuń -->
+                    <div id="team-delete-tab" class="team-tab-content">
+                        <h4 class="card-title">
+                            <i class="fas fa-trash"></i>
+                            Usuwanie podzespołu
+                        </h4>
+                        <p>Usunięcie podzespołu jest nieodwracalne. Wszystkie dane związane z tym podzespołem zostaną trwale
+                            usunięte.</p>
+                        <div class="action-buttons">
+                            <button id="delete-team-btn" class="btn-danger">
+                                <i class="fas fa-trash"></i>
+                                Usuń podzespół
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Modal dodawania członka -->
-        <div id="add-member-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Dodaj członka</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal dodawania członka -->
+            <div id="add-member-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dodaj członka</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="add-member-form">
+                        <div class="form-group">
+                            <label for="member-name">Imię i nazwisko</label>
+                            <input type="text" id="member-name" required placeholder="Wprowadź imię i nazwisko">
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Dodaj
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="add-member-form">
-                    <div class="form-group">
-                        <label for="member-name">Imię i nazwisko</label>
-                        <input type="text" id="member-name" required placeholder="Wprowadź imię i nazwisko">
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Dodaj
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- Modal dodawania notatki -->
-        <div id="add-note-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Dodaj notatkę</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal dodawania notatki -->
+            <div id="add-note-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dodaj notatkę</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="add-note-form">
+                        <div class="form-group">
+                            <label for="note-author">Autor</label>
+                            <input type="text" id="note-author" required value="Jan Kowalski">
+                        </div>
+                        <div class="form-group">
+                            <label for="note-date">Data</label>
+                            <input type="date" id="note-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="note-content">Treść notatki</label>
+                            <textarea id="note-content" rows="5" required placeholder="Wprowadź treść notatki"></textarea>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Dodaj
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="add-note-form">
-                    <div class="form-group">
-                        <label for="note-author">Autor</label>
-                        <input type="text" id="note-author" required value="Jan Kowalski">
-                    </div>
-                    <div class="form-group">
-                        <label for="note-date">Data</label>
-                        <input type="date" id="note-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="note-content">Treść notatki</label>
-                        <textarea id="note-content" rows="5" required placeholder="Wprowadź treść notatki"></textarea>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Dodaj
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- Modal dodawania zadania -->
-        <div id="add-task-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Dodaj zadanie</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal dodawania zadania -->
+            <div id="add-task-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dodaj zadanie</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="add-task-form">
+                        <div class="form-group">
+                            <label for="task-title">Tytuł zadania</label>
+                            <input type="text" id="task-title" required placeholder="Wprowadź tytuł zadania">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description">Opis zadania</label>
+                            <textarea id="task-description" rows="3" required
+                                placeholder="Wprowadź opis zadania"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-assignee">Przypisz do</label>
+                            <select id="task-assignee" required>
+                                <option value="">Wybierz członka</option>
+                                <!-- Opcje będą dodawane dynamicznie -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-status">Status</label>
+                            <select id="task-status" required>
+                                <option value="todo">Do wykonania</option>
+                                <option value="inprogress">W trakcie</option>
+                                <option value="done">Zakończone</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-deadline">Termin</label>
+                            <input type="date" id="task-deadline" required>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Dodaj
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="add-task-form">
-                    <div class="form-group">
-                        <label for="task-title">Tytuł zadania</label>
-                        <input type="text" id="task-title" required placeholder="Wprowadź tytuł zadania">
-                    </div>
-                    <div class="form-group">
-                        <label for="task-description">Opis zadania</label>
-                        <textarea id="task-description" rows="3" required placeholder="Wprowadź opis zadania"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-assignee">Przypisz do</label>
-                        <select id="task-assignee" required>
-                            <option value="">Wybierz członka</option>
-                            <!-- Opcje będą dodawane dynamicznie -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-status">Status</label>
-                        <select id="task-status" required>
-                            <option value="todo">Do wykonania</option>
-                            <option value="inprogress">W trakcie</option>
-                            <option value="done">Zakończone</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="task-deadline">Termin</label>
-                        <input type="date" id="task-deadline" required>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Dodaj
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- Modal edycji zadania -->
-        <div id="edit-task-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Edytuj zadanie</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal edycji zadania -->
+            <div id="edit-task-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edytuj zadanie</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="edit-task-form">
+                        <input type="hidden" id="edit-task-id">
+                        <div class="form-group">
+                            <label for="edit-task-title">Tytuł zadania</label>
+                            <input type="text" id="edit-task-title" required placeholder="Wprowadź tytuł zadania">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-task-description">Opis zadania</label>
+                            <textarea id="edit-task-description" rows="3" required
+                                placeholder="Wprowadź opis zadania"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-task-assignee">Przypisz do</label>
+                            <select id="edit-task-assignee" required>
+                                <option value="">Wybierz członka</option>
+                                <!-- Opcje będą dodawane dynamicznie -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-task-status">Status</label>
+                            <select id="edit-task-status" required>
+                                <option value="todo">Do wykonania</option>
+                                <option value="inprogress">W trakcie</option>
+                                <option value="done">Zakończone</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-task-deadline">Termin</label>
+                            <input type="date" id="edit-task-deadline" required>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-save"></i>
+                                Zapisz zmiany
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="edit-task-form">
-                    <input type="hidden" id="edit-task-id">
-                    <div class="form-group">
-                        <label for="edit-task-title">Tytuł zadania</label>
-                        <input type="text" id="edit-task-title" required placeholder="Wprowadź tytuł zadania">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-task-description">Opis zadania</label>
-                        <textarea id="edit-task-description" rows="3" required placeholder="Wprowadź opis zadania"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-task-assignee">Przypisz do</label>
-                        <select id="edit-task-assignee" required>
-                            <option value="">Wybierz członka</option>
-                            <!-- Opcje będą dodawane dynamicznie -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-task-status">Status</label>
-                        <select id="edit-task-status" required>
-                            <option value="todo">Do wykonania</option>
-                            <option value="inprogress">W trakcie</option>
-                            <option value="done">Zakończone</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-task-deadline">Termin</label>
-                        <input type="date" id="edit-task-deadline" required>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-save"></i>
-                            Zapisz zmiany
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- Modal dodawania rady/organizacji -->
-        <div id="add-council-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Dodaj organizację/radę</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal dodawania rady/organizacji -->
+            <div id="add-council-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dodaj organizację/radę</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="add-council-form">
+                        <div class="form-group">
+                            <label for="council-name">Nazwa</label>
+                            <input type="text" id="council-name" required placeholder="Wprowadź nazwę">
+                        </div>
+                        <div class="form-group">
+                            <label for="council-description">Opis</label>
+                            <textarea id="council-description" rows="3" required
+                                placeholder="Wprowadź krótki opis"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="council-contact">Osoba kontaktowa</label>
+                            <select id="council-contact" required>
+                                <option value="">Wybierz osobę kontaktową</option>
+                                <!-- Opcje będą dodawane dynamicznie -->
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Dodaj
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="add-council-form">
-                    <div class="form-group">
-                        <label for="council-name">Nazwa</label>
-                        <input type="text" id="council-name" required placeholder="Wprowadź nazwę">
-                    </div>
-                    <div class="form-group">
-                        <label for="council-description">Opis</label>
-                        <textarea id="council-description" rows="3" required placeholder="Wprowadź krótki opis"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="council-contact">Osoba kontaktowa</label>
-                        <select id="council-contact" required>
-                            <option value="">Wybierz osobę kontaktową</option>
-                            <!-- Opcje będą dodawane dynamicznie -->
-                        </select>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Dodaj
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
 
-        <!-- Modal dodawania kompetencji -->
-        <div id="add-competence-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Dodaj kompetencję</h3>
-                    <span class="close-modal">&times;</span>
+            <!-- Modal dodawania kompetencji -->
+            <div id="add-competence-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Dodaj kompetencję</h3>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <form id="add-competence-form">
+                        <div class="form-group">
+                            <label for="competence-name">Nazwa kompetencji</label>
+                            <input type="text" id="competence-name" required placeholder="Wprowadź nazwę kompetencji">
+                        </div>
+                        <div class="form-group">
+                            <label for="competence-people">Osoby z tą kompetencją</label>
+                            <select id="competence-people" multiple>
+                                <!-- Opcje będą dodawane dynamicznie -->
+                            </select>
+                            <div class="help-text">Przytrzymaj Ctrl (Cmd na Mac) aby wybrać wiele osób</div>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit">
+                                <i class="fas fa-check"></i>
+                                Dodaj
+                            </button>
+                            <button type="button" class="btn-danger close-modal">
+                                <i class="fas fa-times"></i>
+                                Anuluj
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="add-competence-form">
-                    <div class="form-group">
-                        <label for="competence-name">Nazwa kompetencji</label>
-                        <input type="text" id="competence-name" required placeholder="Wprowadź nazwę kompetencji">
-                    </div>
-                    <div class="form-group">
-                        <label for="competence-people">Osoby z tą kompetencją</label>
-                        <select id="competence-people" multiple class="multi-select">
-                            <!-- Opcje będą dodawane dynamicznie -->
-                        </select>
-                        <div class="help-text">Przytrzymaj Ctrl (Cmd na Mac) aby wybrać wiele osób</div>
-                    </div>
-                    <div class="action-buttons">
-                        <button type="submit">
-                            <i class="fas fa-check"></i>
-                            Dodaj
-                        </button>
-                        <button type="button" class="btn-danger close-modal">
-                            <i class="fas fa-times"></i>
-                            Anuluj
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -1339,13 +1387,13 @@
     <script>
         // Konfiguracja Firebase - należy zastąpić własnymi danymi z konsoli Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyCrXDdr4iRmDM2ahdbdV3VMvPBShKiNFVU",
-            authDomain: "strona-podzespolow.firebaseapp.com",
-            projectId: "strona-podzespolow",
-            storageBucket: "strona-podzespolow.firebasestorage.app",
-            messagingSenderId: "55919562527",
-            appId: "1:55919562527:web:0c93ea9f3bb390feaa6a2a",
-            measurementId: "G-0GQYQE748F"
+              apiKey: "AIzaSyCrXDdr4iRmDM2ahdbdV3VMvPBShKiNFVU",
+              authDomain: "strona-podzespolow.firebaseapp.com",
+              projectId: "strona-podzespolow",
+              storageBucket: "strona-podzespolow.firebasestorage.app",
+              messagingSenderId: "55919562527",
+              appId: "1:55919562527:web:0c93ea9f3bb390feaa6a2a",
+              measurementId: "G-0GQYQE748F"
         };
 
         // Inicjalizacja Firebase
@@ -1401,34 +1449,30 @@
         const iconPreview = document.getElementById('icon-preview');
         const teamIconInput = document.getElementById('team-icon');
         const exportAllBtn = document.getElementById('export-all-btn');
+        const loadingScreen = document.getElementById('loading-screen');
+        const appContent = document.getElementById('app-content');
 
         // Inicjalizacja aplikacji
         function initApp() {
-            // Obserwator stanu uwierzytelnienia
+            // Sprawdzenie stanu uwierzytelnienia
             auth.onAuthStateChanged(user => {
                 if (user) {
                     // Użytkownik jest zalogowany
                     currentUser = user;
                     updateUIAfterAuth();
                     loadUserData();
-                    showNotification('Zalogowano pomyślnie!', 'success');
                 } else {
                     // Użytkownik nie jest zalogowany
                     currentUser = null;
                     updateUIAfterAuth();
-                    teams = [];
-                    councils = [];
-                    competences = [];
-                    renderTeams();
-                    renderCouncils();
-                    renderCompetences();
+                    hideLoading();
                 }
             });
-            
+
             // Obsługa logowania przez Google
             loginBtn.addEventListener('click', signInWithGoogle);
             logoutBtn.addEventListener('click', signOut);
-            
+
             // Obsługa zakładek
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1436,7 +1480,7 @@
                     activateTab(tabId);
                 });
             });
-            
+
             // Obsługa podzakładek
             subTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1444,7 +1488,7 @@
                     activateSubTab(subtabId);
                 });
             });
-            
+
             // Obsługa zakładek w modalach
             teamTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1452,12 +1496,12 @@
                     activateTeamTab(teamTabId);
                 });
             });
-            
+
             // Obsługa modali
             createTeamBtn.addEventListener('click', () => {
                 createTeamModal.style.display = 'flex';
             });
-            
+
             closeModals.forEach(closeBtn => {
                 closeBtn.addEventListener('click', () => {
                     document.querySelectorAll('.modal').forEach(modal => {
@@ -1465,10 +1509,10 @@
                     });
                 });
             });
-            
+
             // Podgląd ikony
             teamIconInput.addEventListener('change', handleIconPreview);
-            
+
             // Obsługa formularzy
             createTeamForm.addEventListener('submit', handleCreateTeam);
             addMemberForm.addEventListener('submit', handleAddMember);
@@ -1477,13 +1521,13 @@
             editTaskForm.addEventListener('submit', handleEditTask);
             addCouncilForm.addEventListener('submit', handleAddCouncil);
             addCompetenceForm.addEventListener('submit', handleAddCompetence);
-            
+
             // Obsługa przycisków
             addCouncilBtn.addEventListener('click', () => {
                 // Wypełnij listę osób
                 const contactSelect = document.getElementById('council-contact');
                 contactSelect.innerHTML = '<option value="">Wybierz osobę kontaktową</option>';
-                
+
                 const allMembers = getAllUniqueMembers();
                 allMembers.forEach(member => {
                     const option = document.createElement('option');
@@ -1491,15 +1535,15 @@
                     option.textContent = member;
                     contactSelect.appendChild(option);
                 });
-                
+
                 addCouncilModal.style.display = 'flex';
             });
-            
+
             addCompetenceBtn.addEventListener('click', () => {
                 // Wypełnij listę osób
                 const peopleSelect = document.getElementById('competence-people');
                 peopleSelect.innerHTML = '';
-                
+
                 const allMembers = getAllUniqueMembers();
                 allMembers.forEach(member => {
                     const option = document.createElement('option');
@@ -1507,30 +1551,30 @@
                     option.textContent = member;
                     peopleSelect.appendChild(option);
                 });
-                
+
                 addCompetenceModal.style.display = 'flex';
             });
-            
+
             document.getElementById('add-member-btn').addEventListener('click', () => {
                 addMemberModal.style.display = 'flex';
             });
-            
+
             document.getElementById('add-note-btn').addEventListener('click', () => {
                 // Ustaw domyślną datę na dzisiejszą
                 document.getElementById('note-date').valueAsDate = new Date();
                 addNoteModal.style.display = 'flex';
             });
-            
+
             document.getElementById('add-task-btn').addEventListener('click', () => {
                 // Ustaw domyślną datę na dzisiejszą + 7 dni
                 const nextWeek = new Date();
                 nextWeek.setDate(nextWeek.getDate() + 7);
                 document.getElementById('task-deadline').valueAsDate = nextWeek;
-                
+
                 // Wypełnij listę członków
                 const assigneeSelect = document.getElementById('task-assignee');
                 assigneeSelect.innerHTML = '<option value="">Wybierz członka</option>';
-                
+
                 if (currentTeam && currentTeam.members) {
                     currentTeam.members.forEach(member => {
                         const option = document.createElement('option');
@@ -1539,44 +1583,47 @@
                         assigneeSelect.appendChild(option);
                     });
                 }
-                
+
                 addTaskModal.style.display = 'flex';
             });
-            
+
             document.getElementById('delete-team-btn').addEventListener('click', handleDeleteTeam);
             document.getElementById('save-description-btn').addEventListener('click', handleSaveDescription);
             document.getElementById('save-news-btn').addEventListener('click', handleSaveNews);
             document.getElementById('export-team-btn').addEventListener('click', handleExportTeam);
             exportAllBtn.addEventListener('click', handleExportAll);
             document.getElementById('import-team-btn').addEventListener('click', handleImportTeam);
-            
+
             // Obsługa filtrowania kompetencji
             competenceFilter.addEventListener('input', filterCompetences);
-            
+
             // Ustawienie domyślnej daty dla notatek
             document.getElementById('note-date').valueAsDate = new Date();
         }
 
         // Funkcje logowania Firebase
         function signInWithGoogle() {
+            showLoading();
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    // Zalogowano pomyślnie - obsłużone przez onAuthStateChanged
+                    showNotification('Zalogowano pomyślnie!', 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd logowania: ", error);
-                    showNotification('Błąd podczas logowania!', 'error');
+                    hideLoading();
+                    showNotification('Błąd logowania: ' + error.message, 'error');
                 });
         }
 
         function signOut() {
+            showLoading();
             auth.signOut()
                 .then(() => {
                     showNotification('Wylogowano pomyślnie!', 'info');
                 })
                 .catch((error) => {
-                    console.error("Błąd wylogowania: ", error);
+                    hideLoading();
+                    showNotification('Błąd wylogowywania: ' + error.message, 'error');
                 });
         }
 
@@ -1587,20 +1634,19 @@
                 userName.textContent = currentUser.displayName;
                 userAvatar.src = currentUser.photoURL;
                 document.getElementById('note-author').value = currentUser.displayName;
+                appContent.classList.remove('hidden');
             } else {
                 loginBtn.classList.remove('hidden');
                 userInfo.classList.add('hidden');
+                appContent.classList.add('hidden');
             }
         }
 
-        // Funkcje zarządzania danymi w Firestore
+        // Funkcje zarządzania danymi użytkownika
         function loadUserData() {
-            if (!currentUser) return;
+            showLoading();
             
-            // Pokaż komunikat ładowania
-            teamsContainer.innerHTML = '<div class="empty-state"><div class="loading"></div><p>Ładowanie danych...</p></div>';
-            
-            // Załaduj dane zespołów
+            // Pobieranie zespołów
             db.collection('users').doc(currentUser.uid).collection('teams')
                 .get()
                 .then((querySnapshot) => {
@@ -1608,122 +1654,109 @@
                     querySnapshot.forEach((doc) => {
                         teams.push({ id: doc.id, ...doc.data() });
                     });
-                    renderTeams();
                     
-                    // Jeśli brak zespołów, załaduj przykładowe
-                    if (teams.length === 0) {
-                        loadSampleData();
-                    }
+                    // Pobieranie rad i organizacji
+                    return db.collection('users').doc(currentUser.uid).collection('councils').get();
                 })
-                .catch((error) => {
-                    console.error("Błąd ładowania zespołów: ", error);
-                    showNotification('Błąd podczas ładowania danych!', 'error');
-                });
-            
-            // Załaduj dane rad i organizacji
-            db.collection('users').doc(currentUser.uid).collection('councils')
-                .get()
                 .then((querySnapshot) => {
                     councils = [];
                     querySnapshot.forEach((doc) => {
                         councils.push({ id: doc.id, ...doc.data() });
                     });
-                    renderCouncils();
+                    
+                    // Pobieranie kompetencji
+                    return db.collection('users').doc(currentUser.uid).collection('competences').get();
                 })
-                .catch((error) => {
-                    console.error("Błąd ładowania rad: ", error);
-                });
-            
-            // Załaduj dane kompetencji
-            db.collection('users').doc(currentUser.uid).collection('competences')
-                .get()
                 .then((querySnapshot) => {
                     competences = [];
                     querySnapshot.forEach((doc) => {
                         competences.push({ id: doc.id, ...doc.data() });
                     });
+                    
+                    // Renderowanie danych
+                    renderTeams();
+                    renderCouncils();
                     renderCompetences();
+                    hideLoading();
                 })
                 .catch((error) => {
-                    console.error("Błąd ładowania kompetencji: ", error);
+                    hideLoading();
+                    showNotification('Błąd ładowania danych: ' + error.message, 'error');
                 });
         }
 
         function saveTeam(team) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            const teamData = { ...team };
-            delete teamData.id; // Usuń id przed zapisem
-            
             if (team.id) {
-                // Aktualizuj istniejący zespół
-                return db.collection('users').doc(currentUser.uid).collection('teams').doc(team.id)
-                    .set(teamData, { merge: true });
-            } else {
-                // Dodaj nowy zespół
+                // Aktualizacja istniejącego zespołu
+                const teamData = { ...team };
+                delete teamData.id; // Firestore nie lubi gdy wysyłamy id w danych
+                
                 return db.collection('users').doc(currentUser.uid).collection('teams')
-                    .add(teamData)
+                    .doc(team.id)
+                    .update(teamData);
+            } else {
+                // Tworzenie nowego zespołu
+                return db.collection('users').doc(currentUser.uid).collection('teams')
+                    .add(team)
                     .then((docRef) => {
-                        team.id = docRef.id; // Zapisz nowe ID
-                        return docRef.id;
+                        team.id = docRef.id;
+                        return docRef;
                     });
             }
         }
 
         function deleteTeam(teamId) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            return db.collection('users').doc(currentUser.uid).collection('teams').doc(teamId).delete();
+            return db.collection('users').doc(currentUser.uid).collection('teams')
+                .doc(teamId)
+                .delete();
         }
 
         function saveCouncil(council) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            const councilData = { ...council };
-            delete councilData.id;
-            
             if (council.id) {
-                return db.collection('users').doc(currentUser.uid).collection('councils').doc(council.id)
-                    .set(councilData, { merge: true });
+                const councilData = { ...council };
+                delete councilData.id;
+                
+                return db.collection('users').doc(currentUser.uid).collection('councils')
+                    .doc(council.id)
+                    .update(councilData);
             } else {
                 return db.collection('users').doc(currentUser.uid).collection('councils')
-                    .add(councilData)
+                    .add(council)
                     .then((docRef) => {
                         council.id = docRef.id;
-                        return docRef.id;
+                        return docRef;
                     });
             }
         }
 
         function deleteCouncil(councilId) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            return db.collection('users').doc(currentUser.uid).collection('councils').doc(councilId).delete();
+            return db.collection('users').doc(currentUser.uid).collection('councils')
+                .doc(councilId)
+                .delete();
         }
 
         function saveCompetence(competence) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            const competenceData = { ...competence };
-            delete competenceData.id;
-            
             if (competence.id) {
-                return db.collection('users').doc(currentUser.uid).collection('competences').doc(competence.id)
-                    .set(competenceData, { merge: true });
+                const competenceData = { ...competence };
+                delete competenceData.id;
+                
+                return db.collection('users').doc(currentUser.uid).collection('competences')
+                    .doc(competence.id)
+                    .update(competenceData);
             } else {
                 return db.collection('users').doc(currentUser.uid).collection('competences')
-                    .add(competenceData)
+                    .add(competence)
                     .then((docRef) => {
                         competence.id = docRef.id;
-                        return docRef.id;
+                        return docRef;
                     });
             }
         }
 
         function deleteCompetence(competenceId) {
-            if (!currentUser) return Promise.reject("Użytkownik nie jest zalogowany");
-            
-            return db.collection('users').doc(currentUser.uid).collection('competences').doc(competenceId).delete();
+            return db.collection('users').doc(currentUser.uid).collection('competences')
+                .doc(competenceId)
+                .delete();
         }
 
         // Funkcje zarządzania zakładkami
@@ -1735,7 +1768,7 @@
                     tab.classList.remove('active');
                 }
             });
-            
+
             tabContents.forEach(content => {
                 if (content.id === `${tabId}-tab`) {
                     content.classList.add('active');
@@ -1753,11 +1786,11 @@
                     tab.classList.remove('active');
                 }
             });
-            
+
             document.querySelectorAll('.team-tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            
+
             document.getElementById(`${subtabId}-subtab`).classList.add('active');
         }
 
@@ -1769,11 +1802,11 @@
                     tab.classList.remove('active');
                 }
             });
-            
+
             teamTabContents.forEach(content => {
                 content.classList.remove('active');
             });
-            
+
             document.getElementById(`team-${teamTabId}-tab`).classList.add('active');
         }
 
@@ -1782,7 +1815,7 @@
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     iconPreview.innerHTML = `<img src="${e.target.result}" alt="Podgląd ikony">`;
                 };
                 reader.readAsDataURL(file);
@@ -1791,14 +1824,16 @@
 
         function handleCreateTeam(e) {
             e.preventDefault();
+            showLoading();
+            
             const teamName = document.getElementById('team-name').value;
             const teamIconFile = document.getElementById('team-icon').files[0];
-            
+
             let teamIcon = "👥"; // Domyślna ikona
-            
+
             if (teamIconFile) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     teamIcon = e.target.result;
                     finishTeamCreation(teamName, teamIcon);
                 };
@@ -1818,21 +1853,20 @@
                 tasks: [],
                 notes: []
             };
-            
-            // Zapisz zespół w Firestore
+
             saveTeam(newTeam)
-                .then((teamId) => {
-                    newTeam.id = teamId;
+                .then(() => {
                     teams.push(newTeam);
                     renderTeams();
                     createTeamModal.style.display = 'none';
                     createTeamForm.reset();
                     iconPreview.innerHTML = '<i class="fas fa-image"></i>';
+                    hideLoading();
                     showNotification(`Podzespół "${teamName}" został utworzony!`, 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd tworzenia zespołu: ", error);
-                    showNotification('Błąd podczas tworzenia podzespołu!', 'error');
+                    hideLoading();
+                    showNotification('Błąd tworzenia podzespołu: ' + error.message, 'error');
                 });
         }
 
@@ -1842,7 +1876,7 @@
                 document.getElementById('team-modal-title').textContent = currentTeam.name;
                 renderTeamDetails();
                 teamDetailsModal.style.display = 'flex';
-                
+
                 // Aktywuj pierwszą zakładkę
                 activateTeamTab('members');
             }
@@ -1850,7 +1884,7 @@
 
         function renderTeams() {
             teamsContainer.innerHTML = '';
-            
+
             if (teams.length === 0) {
                 teamsContainer.innerHTML = `
                     <div class="empty-state">
@@ -1860,18 +1894,18 @@
                 `;
                 return;
             }
-            
+
             teams.forEach(team => {
                 const teamCard = document.createElement('div');
                 teamCard.className = 'team-card';
-                
+
                 let iconContent = '';
                 if (team.icon.startsWith('data:image')) {
                     iconContent = `<img src="${team.icon}" alt="${team.name}">`;
                 } else {
                     iconContent = `<span>${team.icon}</span>`;
                 }
-                
+
                 teamCard.innerHTML = `
                     <div class="team-icon">${iconContent}</div>
                     <div class="team-info">
@@ -1882,7 +1916,7 @@
                         </div>
                     </div>
                 `;
-                
+
                 teamCard.addEventListener('click', () => openTeamDetails(team.id));
                 teamsContainer.appendChild(teamCard);
             });
@@ -1890,11 +1924,11 @@
 
         function renderTeamDetails() {
             if (!currentTeam) return;
-            
+
             // Renderowanie członków
             const membersList = document.getElementById('team-members-list');
             membersList.innerHTML = '';
-            
+
             if (currentTeam.members.length === 0) {
                 membersList.innerHTML = `
                     <div class="empty-state">
@@ -1915,28 +1949,28 @@
                     `;
                     membersList.appendChild(memberItem);
                 });
-                
+
                 // Dodanie nasłuchiwania na przyciski usuwania
                 document.querySelectorAll('.remove-member').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        const memberId = parseInt(e.target.closest('.remove-member').getAttribute('data-id'));
+                        const memberId = e.target.closest('.remove-member').getAttribute('data-id');
                         removeMember(memberId);
                     });
                 });
             }
-            
+
             // Renderowanie opisu
             const descriptionEditor = document.getElementById('team-description-editor');
             descriptionEditor.innerHTML = currentTeam.description || '<p>Dodaj opis podzespołu...</p>';
-            
+
             // Renderowanie aktualności
             const newsEditor = document.getElementById('team-news-editor');
             newsEditor.innerHTML = currentTeam.news || '<p>Dodaj aktualności podzespołu...</p>';
-            
+
             // Renderowanie zadań
             const tasksList = document.getElementById('team-tasks-list');
             tasksList.innerHTML = '';
-            
+
             if (currentTeam.tasks.length === 0) {
                 tasksList.innerHTML = `
                     <div class="empty-state">
@@ -1949,12 +1983,12 @@
                     const taskItem = document.createElement('div');
                     taskItem.className = 'task-item';
                     taskItem.setAttribute('data-id', task.id);
-                    
+
                     let statusClass = '';
                     let statusText = '';
                     let statusIcon = '';
-                    
-                    switch(task.status) {
+
+                    switch (task.status) {
                         case 'todo':
                             statusClass = 'status-todo';
                             statusText = 'Do wykonania';
@@ -1971,9 +2005,9 @@
                             statusIcon = 'fas fa-check-circle';
                             break;
                     }
-                    
-                    const assignee = currentTeam.members.find(m => m.id === task.assignee) || {name: 'Nieznany'};
-                    
+
+                    const assignee = currentTeam.members.find(m => m.id === task.assignee) || { name: 'Nieznany' };
+
                     taskItem.innerHTML = `
                         <div class="task-header">
                             <div class="task-title">${task.title}</div>
@@ -2003,27 +2037,27 @@
                     `;
                     tasksList.appendChild(taskItem);
                 });
-                
+
                 // Dodanie nasłuchiwania na przyciski zadań
                 document.querySelectorAll('.edit-task').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        const taskId = parseInt(e.target.closest('.edit-task').getAttribute('data-id'));
+                        const taskId = e.target.closest('.edit-task').getAttribute('data-id');
                         editTask(taskId);
                     });
                 });
-                
+
                 document.querySelectorAll('.remove-task').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        const taskId = parseInt(e.target.closest('.remove-task').getAttribute('data-id'));
+                        const taskId = e.target.closest('.remove-task').getAttribute('data-id');
                         removeTask(taskId);
                     });
                 });
             }
-            
+
             // Renderowanie notatek
             const notesList = document.getElementById('team-notes-list');
             notesList.innerHTML = '';
-            
+
             if (currentTeam.notes.length === 0) {
                 notesList.innerHTML = `
                     <div class="empty-state">
@@ -2050,45 +2084,49 @@
         function handleAddMember(e) {
             e.preventDefault();
             if (!currentTeam) return;
+
+            showLoading();
             
             const memberName = document.getElementById('member-name').value;
-            
+
             const newMember = {
-                id: Date.now(),
+                id: Date.now().toString(),
                 name: memberName
             };
-            
+
             currentTeam.members.push(newMember);
             
-            // Zapisz zmiany w Firestore
             saveTeam(currentTeam)
                 .then(() => {
                     renderTeamDetails();
                     addMemberModal.style.display = 'none';
                     addMemberForm.reset();
+                    hideLoading();
                     showNotification(`Członek "${memberName}" został dodany do podzespołu!`, 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd dodawania członka: ", error);
-                    showNotification('Błąd podczas dodawania członka!', 'error');
+                    hideLoading();
+                    showNotification('Błąd dodawania członka: ' + error.message, 'error');
                 });
         }
 
         function removeMember(memberId) {
             if (!currentTeam) return;
-            
+
             if (confirm('Czy na pewno chcesz usunąć tego członka z podzespołu?')) {
+                showLoading();
+                
                 currentTeam.members = currentTeam.members.filter(member => member.id !== memberId);
                 
-                // Zapisz zmiany w Firestore
                 saveTeam(currentTeam)
                     .then(() => {
                         renderTeamDetails();
+                        hideLoading();
                         showNotification('Członek został usunięty z podzespołu!', 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd usuwania członka: ", error);
-                        showNotification('Błąd podczas usuwania członka!', 'error');
+                        hideLoading();
+                        showNotification('Błąd usuwania członka: ' + error.message, 'error');
                     });
             }
         }
@@ -2096,73 +2134,77 @@
         function handleAddNote(e) {
             e.preventDefault();
             if (!currentTeam) return;
+
+            showLoading();
             
             const noteAuthor = document.getElementById('note-author').value;
             const noteDate = document.getElementById('note-date').value;
             const noteContent = document.getElementById('note-content').value;
-            
+
             const newNote = {
-                id: Date.now(),
+                id: Date.now().toString(),
                 date: noteDate,
                 author: noteAuthor,
                 content: noteContent
             };
-            
+
             currentTeam.notes.push(newNote);
             
-            // Zapisz zmiany w Firestore
             saveTeam(currentTeam)
                 .then(() => {
                     renderTeamDetails();
                     addNoteModal.style.display = 'none';
                     addNoteForm.reset();
                     document.getElementById('note-author').value = currentUser ? currentUser.displayName : '';
+                    hideLoading();
                     showNotification('Notatka została dodana!', 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd dodawania notatki: ", error);
-                    showNotification('Błąd podczas dodawania notatki!', 'error');
+                    hideLoading();
+                    showNotification('Błąd dodawania notatki: ' + error.message, 'error');
                 });
         }
 
         function handleAddTask(e) {
             e.preventDefault();
             if (!currentTeam) return;
+
+            showLoading();
             
             const taskTitle = document.getElementById('task-title').value;
             const taskDescription = document.getElementById('task-description').value;
-            const taskAssignee = parseInt(document.getElementById('task-assignee').value);
+            const taskAssignee = document.getElementById('task-assignee').value;
             const taskStatus = document.getElementById('task-status').value;
             const taskDeadline = document.getElementById('task-deadline').value;
-            
+
             const newTask = {
-                id: Date.now(),
+                id: Date.now().toString(),
                 title: taskTitle,
                 description: taskDescription,
                 assignee: taskAssignee,
                 status: taskStatus,
                 deadline: taskDeadline
             };
-            
+
             currentTeam.tasks.push(newTask);
             
-            // Zapisz zmiany w Firestore
             saveTeam(currentTeam)
                 .then(() => {
                     renderTeamDetails();
                     addTaskModal.style.display = 'none';
                     addTaskForm.reset();
+                    hideLoading();
                     showNotification(`Zadanie "${taskTitle}" zostało dodane!`, 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd dodawania zadania: ", error);
-                    showNotification('Błąd podczas dodawania zadania!', 'error');
+                    hideLoading();
+                    showNotification('Błąd dodawania zadania: ' + error.message, 'error');
                 });
         }
 
         function editTask(taskId) {
             if (!currentTeam) return;
-            
+
             const task = currentTeam.tasks.find(t => t.id === taskId);
             if (task) {
                 document.getElementById('edit-task-id').value = task.id;
@@ -2170,11 +2212,11 @@
                 document.getElementById('edit-task-description').value = task.description;
                 document.getElementById('edit-task-status').value = task.status;
                 document.getElementById('edit-task-deadline').value = task.deadline;
-                
+
                 // Wypełnij listę członków
                 const assigneeSelect = document.getElementById('edit-task-assignee');
                 assigneeSelect.innerHTML = '<option value="">Wybierz członka</option>';
-                
+
                 if (currentTeam.members) {
                     currentTeam.members.forEach(member => {
                         const option = document.createElement('option');
@@ -2184,7 +2226,7 @@
                         assigneeSelect.appendChild(option);
                     });
                 }
-                
+
                 editTaskModal.style.display = 'flex';
             }
         }
@@ -2192,14 +2234,16 @@
         function handleEditTask(e) {
             e.preventDefault();
             if (!currentTeam) return;
+
+            showLoading();
             
-            const taskId = parseInt(document.getElementById('edit-task-id').value);
+            const taskId = document.getElementById('edit-task-id').value;
             const taskTitle = document.getElementById('edit-task-title').value;
             const taskDescription = document.getElementById('edit-task-description').value;
-            const taskAssignee = parseInt(document.getElementById('edit-task-assignee').value);
+            const taskAssignee = document.getElementById('edit-task-assignee').value;
             const taskStatus = document.getElementById('edit-task-status').value;
             const taskDeadline = document.getElementById('edit-task-deadline').value;
-            
+
             const taskIndex = currentTeam.tasks.findIndex(t => t.id === taskId);
             if (taskIndex !== -1) {
                 currentTeam.tasks[taskIndex] = {
@@ -2210,89 +2254,97 @@
                     status: taskStatus,
                     deadline: taskDeadline
                 };
-                
-                // Zapisz zmiany w Firestore
+
                 saveTeam(currentTeam)
                     .then(() => {
                         renderTeamDetails();
                         editTaskModal.style.display = 'none';
+                        hideLoading();
                         showNotification(`Zadanie "${taskTitle}" zostało zaktualizowane!`, 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd edycji zadania: ", error);
-                        showNotification('Błąd podczas edycji zadania!', 'error');
+                        hideLoading();
+                        showNotification('Błąd edycji zadania: ' + error.message, 'error');
                     });
             }
         }
 
         function removeTask(taskId) {
             if (!currentTeam) return;
-            
+
             if (confirm('Czy na pewno chcesz usunąć to zadanie?')) {
+                showLoading();
+                
                 currentTeam.tasks = currentTeam.tasks.filter(task => task.id !== taskId);
                 
-                // Zapisz zmiany w Firestore
                 saveTeam(currentTeam)
                     .then(() => {
                         renderTeamDetails();
+                        hideLoading();
                         showNotification('Zadanie zostało usunięte!', 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd usuwania zadania: ", error);
-                        showNotification('Błąd podczas usuwania zadania!', 'error');
+                        hideLoading();
+                        showNotification('Błąd usuwania zadania: ' + error.message, 'error');
                     });
             }
         }
 
         function handleSaveDescription() {
             if (!currentTeam) return;
+
+            showLoading();
             
             const descriptionEditor = document.getElementById('team-description-editor');
             currentTeam.description = descriptionEditor.innerHTML;
             
-            // Zapisz zmiany w Firestore
             saveTeam(currentTeam)
                 .then(() => {
+                    hideLoading();
                     showNotification('Opis podzespołu został zapisany!', 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd zapisywania opisu: ", error);
-                    showNotification('Błąd podczas zapisywania opisu!', 'error');
+                    hideLoading();
+                    showNotification('Błąd zapisywania opisu: ' + error.message, 'error');
                 });
         }
 
         function handleSaveNews() {
             if (!currentTeam) return;
+
+            showLoading();
             
             const newsEditor = document.getElementById('team-news-editor');
             currentTeam.news = newsEditor.innerHTML;
             
-            // Zapisz zmiany w Firestore
             saveTeam(currentTeam)
                 .then(() => {
+                    hideLoading();
                     showNotification('Aktualności podzespołu zostały zapisane!', 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd zapisywania aktualności: ", error);
-                    showNotification('Błąd podczas zapisywania aktualności!', 'error');
+                    hideLoading();
+                    showNotification('Błąd zapisywania aktualności: ' + error.message, 'error');
                 });
         }
 
         function handleDeleteTeam() {
             if (!currentTeam) return;
-            
+
             if (confirm(`Czy na pewno chcesz usunąć podzespół "${currentTeam.name}"? Tej operacji nie można cofnąć.`)) {
-                // Usuń zespół z Firestore
+                showLoading();
+                
                 deleteTeam(currentTeam.id)
                     .then(() => {
                         teams = teams.filter(team => team.id !== currentTeam.id);
                         teamDetailsModal.style.display = 'none';
                         renderTeams();
+                        hideLoading();
                         showNotification(`Podzespół "${currentTeam.name}" został usunięty!`, 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd usuwania zespołu: ", error);
-                        showNotification('Błąd podczas usuwania podzespołu!', 'error');
+                        hideLoading();
+                        showNotification('Błąd usuwania podzespołu: ' + error.message, 'error');
                     });
             }
         }
@@ -2300,58 +2352,58 @@
         // Funkcje zarządzania radami i kompetencjami
         function handleAddCouncil(e) {
             e.preventDefault();
-            
+            showLoading();
+
             const councilName = document.getElementById('council-name').value;
             const councilDescription = document.getElementById('council-description').value;
             const councilContact = document.getElementById('council-contact').value;
-            
+
             const newCouncil = {
                 name: councilName,
                 description: councilDescription,
                 contact: councilContact
             };
-            
-            // Zapisz w Firestore
+
             saveCouncil(newCouncil)
-                .then((councilId) => {
-                    newCouncil.id = councilId;
+                .then(() => {
                     councils.push(newCouncil);
                     renderCouncils();
                     addCouncilModal.style.display = 'none';
                     addCouncilForm.reset();
+                    hideLoading();
                     showNotification(`Rada/Organizacja "${councilName}" została dodana!`, 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd dodawania rady: ", error);
-                    showNotification('Błąd podczas dodawania rady/organizacji!', 'error');
+                    hideLoading();
+                    showNotification('Błąd dodawania rady/organizacji: ' + error.message, 'error');
                 });
         }
 
         function handleAddCompetence(e) {
             e.preventDefault();
-            
+            showLoading();
+
             const competenceNameValue = document.getElementById('competence-name').value;
             const competencePeopleSelect = document.getElementById('competence-people');
             const selectedPeople = Array.from(competencePeopleSelect.selectedOptions).map(option => option.value);
-            
+
             const newCompetence = {
                 name: competenceNameValue,
                 people: selectedPeople
             };
-            
-            // Zapisz w Firestore
+
             saveCompetence(newCompetence)
-                .then((competenceId) => {
-                    newCompetence.id = competenceId;
+                .then(() => {
                     competences.push(newCompetence);
                     renderCompetences();
                     addCompetenceModal.style.display = 'none';
                     addCompetenceForm.reset();
+                    hideLoading();
                     showNotification(`Kompetencja "${competenceNameValue}" została dodana!`, 'success');
                 })
                 .catch((error) => {
-                    console.error("Błąd dodawania kompetencji: ", error);
-                    showNotification('Błąd podczas dodawania kompetencji!', 'error');
+                    hideLoading();
+                    showNotification('Błąd dodawania kompetencji: ' + error.message, 'error');
                 });
         }
 
@@ -2367,7 +2419,7 @@
 
         function renderCouncils() {
             councilsList.innerHTML = '';
-            
+
             if (councils.length === 0) {
                 councilsList.innerHTML = `
                     <div class="empty-state">
@@ -2377,7 +2429,7 @@
                 `;
                 return;
             }
-            
+
             councils.forEach(council => {
                 const councilItem = document.createElement('div');
                 councilItem.className = 'council-item';
@@ -2394,7 +2446,7 @@
                 `;
                 councilsList.appendChild(councilItem);
             });
-            
+
             // Dodanie nasłuchiwania na przyciski usuwania
             document.querySelectorAll('.remove-council').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -2406,23 +2458,25 @@
 
         function removeCouncil(councilId) {
             if (confirm('Czy na pewno chcesz usunąć tę radę/organizację?')) {
-                // Usuń z Firestore
+                showLoading();
+                
                 deleteCouncil(councilId)
                     .then(() => {
                         councils = councils.filter(council => council.id !== councilId);
                         renderCouncils();
+                        hideLoading();
                         showNotification('Rada/Organizacja została usunięta!', 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd usuwania rady: ", error);
-                        showNotification('Błąd podczas usuwania rady/organizacji!', 'error');
+                        hideLoading();
+                        showNotification('Błąd usuwania rady/organizacji: ' + error.message, 'error');
                     });
             }
         }
 
         function renderCompetences() {
             competencesList.innerHTML = '';
-            
+
             if (competences.length === 0) {
                 competencesList.innerHTML = `
                     <div class="empty-state">
@@ -2432,7 +2486,7 @@
                 `;
                 return;
             }
-            
+
             competences.forEach(competence => {
                 const competenceItem = document.createElement('div');
                 competenceItem.className = 'competence-item';
@@ -2454,7 +2508,7 @@
                 `;
                 competencesList.appendChild(competenceItem);
             });
-            
+
             // Dodanie nasłuchiwania na przyciski
             document.querySelectorAll('.view-competence').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -2462,7 +2516,7 @@
                     viewCompetence(competenceId);
                 });
             });
-            
+
             document.querySelectorAll('.remove-competence').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const competenceId = e.target.closest('.remove-competence').getAttribute('data-id');
@@ -2475,10 +2529,10 @@
             currentCompetence = competences.find(c => c.id === competenceId);
             if (currentCompetence) {
                 competenceName.textContent = currentCompetence.name;
-                
+
                 // Wyświetl listę osób
                 competencePeopleList.innerHTML = '';
-                
+
                 if (currentCompetence.people.length === 0) {
                     competencePeopleList.innerHTML = `
                         <div class="empty-state">
@@ -2496,14 +2550,15 @@
                         competencePeopleList.appendChild(personItem);
                     });
                 }
-                
+
                 competenceDetails.classList.remove('hidden');
             }
         }
 
         function removeCompetence(competenceId) {
             if (confirm('Czy na pewno chcesz usunąć tę kompetencję?')) {
-                // Usuń z Firestore
+                showLoading();
+                
                 deleteCompetence(competenceId)
                     .then(() => {
                         competences = competences.filter(competence => competence.id !== competenceId);
@@ -2514,18 +2569,19 @@
                             currentCompetence = null;
                         }
                         
+                        hideLoading();
                         showNotification('Kompetencja została usunięta!', 'success');
                     })
                     .catch((error) => {
-                        console.error("Błąd usuwania kompetencji: ", error);
-                        showNotification('Błąd podczas usuwania kompetencji!', 'error');
+                        hideLoading();
+                        showNotification('Błąd usuwania kompetencji: ' + error.message, 'error');
                     });
             }
         }
 
         function filterCompetences() {
             const filterValue = competenceFilter.value.toLowerCase();
-            
+
             document.querySelectorAll('.competence-item').forEach(item => {
                 const competenceName = item.querySelector('h4').textContent.toLowerCase();
                 if (competenceName.includes(filterValue)) {
@@ -2539,17 +2595,17 @@
         // Funkcje eksportu i importu
         function handleExportTeam() {
             if (!currentTeam) return;
-            
+
             const dataStr = JSON.stringify(currentTeam, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
             const exportFileDefaultName = `${currentTeam.name.replace(/\s+/g, '_')}.json`;
-            
+
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
             linkElement.setAttribute('download', exportFileDefaultName);
             linkElement.click();
-            
+
             showNotification(`Dane podzespołu "${currentTeam.name}" zostały wyeksportowane!`, 'success');
         }
 
@@ -2559,56 +2615,59 @@
                 councils: councils,
                 competences: competences
             };
-            
+
             const dataStr = JSON.stringify(allData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
             const exportFileDefaultName = `teamorganizer_backup_${formatDateForExport(new Date())}.json`;
-            
+
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
             linkElement.setAttribute('download', exportFileDefaultName);
             linkElement.click();
-            
+
             showNotification('Wszystkie dane zostały wyeksportowane!', 'success');
         }
 
         function handleImportTeam() {
             const fileInput = document.getElementById('import-team-file');
             const file = fileInput.files[0];
-            
+
             if (!file) {
                 showNotification('Proszę wybrać plik do importu', 'error');
                 return;
             }
+
+            showLoading();
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const importedTeam = JSON.parse(e.target.result);
-                    
+
                     // Sprawdź czy to poprawny zespół
                     if (!importedTeam.name || !importedTeam.members) {
                         throw new Error('Nieprawidłowy format pliku');
                     }
-                    
-                    // Usuń ID, aby Firestore wygenerował nowe
+
+                    // Nadaj nowe ID aby uniknąć konfliktów
                     delete importedTeam.id;
-                    
-                    // Zapisz zaimportowany zespół w Firestore
+
                     saveTeam(importedTeam)
-                        .then((teamId) => {
-                            importedTeam.id = teamId;
+                        .then((docRef) => {
+                            importedTeam.id = docRef.id;
                             teams.push(importedTeam);
                             renderTeams();
                             fileInput.value = '';
+                            hideLoading();
                             showNotification(`Podzespół "${importedTeam.name}" został zaimportowany!`, 'success');
                         })
                         .catch((error) => {
-                            console.error("Błąd importowania zespołu: ", error);
-                            showNotification('Błąd podczas importowania podzespołu!', 'error');
+                            hideLoading();
+                            showNotification('Błąd importowania: ' + error.message, 'error');
                         });
                 } catch (error) {
+                    hideLoading();
                     showNotification('Błąd podczas importowania pliku: ' + error.message, 'error');
                 }
             };
@@ -2628,9 +2687,9 @@
         function showNotification(message, type) {
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
-            
+
             let icon = '';
-            switch(type) {
+            switch (type) {
                 case 'success':
                     icon = '<i class="fas fa-check-circle"></i>';
                     break;
@@ -2640,155 +2699,26 @@
                 default:
                     icon = '<i class="fas fa-info-circle"></i>';
             }
-            
+
             notification.innerHTML = `${icon} ${message}`;
             document.body.appendChild(notification);
-            
+
             setTimeout(() => {
                 notification.remove();
             }, 3000);
         }
 
-        // Ładowanie przykładowych danych
-        function loadSampleData() {
-            // Przykładowe podzespoły
-            teams = [
-                {
-                    id: "sample-team-1",
-                    name: "Zespół Developerski",
-                    icon: "💻",
-                    members: [
-                        { id: 1, name: "Anna Nowak" },
-                        { id: 2, name: "Piotr Wiśniewski" },
-                        { id: 3, name: "Katarzyna Kowalczyk" }
-                    ],
-                    description: "Zespół odpowiedzialny za rozwój aplikacji webowych.",
-                    news: "<h3>Najnowsze aktualności</h3><p>Rozpoczęliśmy pracę nad nową wersję aplikacji. Planowany termin zakończenia: koniec kwartału.</p>",
-                    tasks: [
-                        {
-                            id: 1,
-                            title: "Przygotowanie specyfikacji API",
-                            description: "Stworzenie dokumentacji API dla nowych endpointów",
-                            assignee: 1,
-                            status: "inprogress",
-                            deadline: "2023-06-30"
-                        },
-                        {
-                            id: 2,
-                            title: "Refaktoryzacja modułu uwierzytelniania",
-                            description: "Przepisanie modułu uwierzytelniania na nową wersję frameworka",
-                            assignee: 2,
-                            status: "todo",
-                            deadline: "2023-07-15"
-                        }
-                    ],
-                    notes: [
-                        { id: 1, date: "2023-05-15", author: "Anna Nowak", content: "Spotkanie kickoff nowego projektu." },
-                        { id: 2, date: "2023-05-22", author: "Piotr Wiśniewski", content: "Przegląd postępów w backendzie." }
-                    ]
-                },
-                {
-                    id: "sample-team-2",
-                    name: "Zespół Marketingowy",
-                    icon: "📊",
-                    members: [
-                        { id: 4, name: "Tomasz Lewandowski" },
-                        { id: 5, name: "Magdalena Kamińska" }
-                    ],
-                    description: "Zespół odpowiedzialny za promocję i wizerunek marki.",
-                    news: "<h3>Plan na nadchodzący miesiąc</h3><p>Przygotowujemy nową kampanię reklamową dla produktu X. Spotkanie planistyczne w przyszły wtorek.</p>",
-                    tasks: [
-                        {
-                            id: 3,
-                            title: "Przygotowanie strategii social media",
-                            description: "Opracowanie comiesięcznego planu postów na media społecznościowe",
-                            assignee: 4,
-                            status: "done",
-                            deadline: "2023-05-20"
-                        }
-                    ],
-                    notes: [
-                        { id: 3, date: "2023-05-10", author: "Tomasz Lewandowski", content: "Planowanie kampanii Q3." }
-                    ]
-                }
-            ];
-            
-            // Przykładowe rady i organizacje
-            councils = [
-                {
-                    id: "sample-council-1",
-                    name: "Rada Programowa",
-                    description: "Odpowiada za strategiczne decyzje dotyczące kierunku rozwoju produktu.",
-                    contact: "Anna Nowak"
-                },
-                {
-                    id: "sample-council-2",
-                    name: "Stowarzyszenie Developerów",
-                    description: "Organizacja zrzeszająca programistów z regionu.",
-                    contact: "Piotr Wiśniewski"
-                }
-            ];
-            
-            // Przykładowe kompetencje
-            competences = [
-                {
-                    id: "sample-competence-1",
-                    name: "JavaScript",
-                    people: ["Anna Nowak", "Katarzyna Kowalczyk"]
-                },
-                {
-                    id: "sample-competence-2",
-                    name: "Python",
-                    people: ["Piotr Wiśniewski"]
-                },
-                {
-                    id: "sample-competence-3",
-                    name: "UI/UX",
-                    people: ["Katarzyna Kowalczyk"]
-                }
-            ];
-            
-            // Zapisz przykładowe dane w Firestore
-            teams.forEach(team => {
-                const teamData = { ...team };
-                const teamId = teamData.id;
-                delete teamData.id;
-                
-                db.collection('users').doc(currentUser.uid).collection('teams').doc(teamId)
-                    .set(teamData)
-                    .catch(error => {
-                        console.error("Błąd zapisywania przykładowego zespołu: ", error);
-                    });
-            });
-            
-            councils.forEach(council => {
-                const councilData = { ...council };
-                const councilId = councilData.id;
-                delete councilData.id;
-                
-                db.collection('users').doc(currentUser.uid).collection('councils').doc(councilId)
-                    .set(councilData)
-                    .catch(error => {
-                        console.error("Błąd zapisywania przykładowej rady: ", error);
-                    });
-            });
-            
-            competences.forEach(competence => {
-                const competenceData = { ...competence };
-                const competenceId = competenceData.id;
-                delete competenceData.id;
-                
-                db.collection('users').doc(currentUser.uid).collection('competences').doc(competenceId)
-                    .set(competenceData)
-                    .catch(error => {
-                        console.error("Błąd zapisywania przykładowej kompetencji: ", error);
-                    });
-            });
+        function showLoading() {
+            loadingScreen.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingScreen.classList.add('hidden');
         }
 
         // Inicjalizacja aplikacji po załadowaniu DOM
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
-</html>
 
+</html>
